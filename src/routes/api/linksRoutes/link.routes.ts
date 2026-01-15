@@ -5,7 +5,7 @@ const router = Router();
 
 router.get("/", getLinksController);
 router.post("/", postLinksController);
-router.delete("/", deleteLinksController);
+router.delete("/:id", deleteLinksController);
 
 router.get("/:shortUrl", getStatusController);
 

@@ -11,7 +11,7 @@
     <link href="https://fonts.cdnfonts.com/css/euclid-circular-a" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
     
-    <title>Pulsar</title>
+    <title>LINKCUT</title>
 
     <link rel="stylesheet" href="css/style.css">
     <script src="js/lib/axios.min.js"></script>
@@ -28,12 +28,35 @@
             <a href="#" class="nav-link">Integrations</a>
         </div>
         <div class="user-actions">
-            <button class="icon-btn">
-                <i class="fa-regular fa-bell"></i>
-            </button>
-            <button class="icon-btn">
-                <i class="fa-regular fa-user"></i>
-            </button>
+            <div class="notification-wrapper">
+                <button class="icon-btn" id="notification-btn">
+                    <i class="fa-regular fa-bell"></i>
+                </button>
+                <div class="dropdown" id="notification-dropdown">
+                    <div class="dropdown-item">
+                        <i class="fa-regular fa-bell"></i>
+                        <span class="notification-text">No notifications available</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="user-menu-wrapper">
+                <button class="icon-btn" id="user-menu-btn">
+                    <i class="fa-regular fa-user"></i>
+                </button>
+                <div class="dropdown" id="user-dropdown">
+                    <% if (locals.user) { %>
+                        <div class="user-info">
+                            <span class="user-name"><%= user.username %></span>
+                            <span class="user-email"><%= user.email %></span>
+                        </div>
+                        <div class="dropdown-divider"></div>
+                        <button id="logout-btn" class="dropdown-item danger">
+                            <i class="fa-solid fa-right-from-bracket"></i> Logout
+                        </button>
+                    <% } %>
+                </div>
+            </div>
         </div>
     </nav>
 
@@ -67,9 +90,10 @@
     </div>
 
     <footer>
-        <p>&copy; 2023 LinkCut Systems. All rights reserved.</p>
+        2026 LinkCut</p>
     </footer>
 
     <script src="js/api.js"></script>
+    <script src="js/modalQR.js"></script>
 </body>
 </html>

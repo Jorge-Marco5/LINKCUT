@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 
 export const dashboardController = (req: Request, res: Response) => {
     try{
-        res.render(`${__dirname}/../../views/index.ejs`);
+        res.render(`${__dirname}/../../views/index.ejs`, { user: req.user });
     }catch(error){
         console.log(error);
         res.status(500).json({

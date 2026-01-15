@@ -41,8 +41,8 @@ export const postLinksController = async (req: Request, res: Response) => {
 
 export const deleteLinksController = async (req: Request, res: Response) => {
     try{
-        const { id } = req.body;
-        const links = await deleteLinksService(id);
+        const { id } = req.params;
+        const links = await deleteLinksService(Number(id));
         res.json({status: "success", code: 200, message: "Link eliminado exitosamente", data: links, errors: null});
     }catch(err: any){
         res.status(500).json({ status: "error", code: 500,
@@ -52,26 +52,6 @@ export const deleteLinksController = async (req: Request, res: Response) => {
     }
 }
 
-//obtener las estadisticas de una url
-/**
- * ejemplo de respuesta:
- * {
- *      "status": "success",
- *      "code": 200,
- *      "message": "Link obtenido exitosamente",
- *      "data": [
- *          {
- *              "date": "2022-01-01",
- *              "clicks": 10
- *          },
- *          {
- *              "date": "2022-01-02",
- *              "clicks": 20
- *          }
- *      ],
- *      "errors": null
- *  }
- */
 export const getStatusController = async (req: Request, res: Response) => {
     try{
         const { shortUrl } = req.params;

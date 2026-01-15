@@ -38,10 +38,10 @@ async function listLinks() {
                     </div>
                     
                     <div class="card-actions">
-                        <button class="icon-btn" style="width: 32px; height: 32px; border: none; background: transparent;">
+                        <button onclick="showQRModal('${urlActual}${short.short_url}')" class="icon-btn" style="width: 32px; height: 32px; border: none; background: transparent;">
                              <i class="fa-solid fa-qrcode"></i>
                         </button>
-                        <button class="icon-btn" style="width: 32px; height: 32px; border: none; background: transparent;">
+                        <button onclick="deleteLink('${short.id}')" class="icon-btn" style="width: 32px; height: 32px; border: none; background: transparent;">
                              <i class="fa-solid fa-trash"></i>
                         </button>
                     </div>
@@ -79,4 +79,67 @@ shortenForm.addEventListener("submit", async (e) => {
 function copyToClipboard(text) {
     navigator.clipboard.writeText(text);
     alert("Copiado al portapapeles: " + text);
+}
+
+function deleteLink(id) {
+    try {
+        //alert dialog
+        const result = confirm("¿Estas seguro de eliminar este enlace?");
+        if (result) {
+            axios.delete(`/api/link/${id}`);
+            listLinks();
+        }
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+// User Dropdown Logic
+const userMenuBtn = document.getElementById('user-menu-btn');
+const userDropdown = document.getElementById('user-dropdown');
+const logoutBtn = document.getElementById('logout-btn');
+
+if (userMenuBtn && userDropdown) {
+    userMenuBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        userDropdown.classList.toggle('show');
+    });
+
+    document.addEventListener('click', (e) => {
+        if (!userMenuBtn.contains(e.target) && !userDropdown.contains(e.target)) {
+            userDropdown.classList.remove('show');
+        }
+    });
+}
+
+if (logoutBtn) {
+    logoutBtn.addEventListener('click', async () => {
+        try {
+            await axios.get('/api/auth/logout');
+            window.location.href = '/auth/login';
+        } catch (error) {
+            console.error('Logout failed:', error);
+            alert('Falló el cierre de sesión');
+        }
+    });
+}
+    
+
+/**
+ * Notification Dropdown Logic
+ */
+const notificationBtn = document.getElementById('notification-btn');
+const notificationDropdown = document.getElementById('notification-dropdown');
+
+if (notificationBtn && notificationDropdown) {
+    notificationBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        notificationDropdown.classList.toggle('show');
+    });
+
+    document.addEventListener('click', (e) => {
+        if (!notificationBtn.contains(e.target) && !notificationDropdown.contains(e.target)) {
+            notificationDropdown.classList.remove('show');
+        }
+    });
 }

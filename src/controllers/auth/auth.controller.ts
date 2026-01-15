@@ -27,7 +27,7 @@ export const loginController = async (req: Request, res: Response) => {
             maxAge: 3600000 // 1 hour
         });
 
-        res.json({ message: "Usuario logueado correctamente", token: result.token });
+        res.json({ message: "Usuario logueado correctamente" });
     } catch (err: any) {
         console.log(err);
         res.status(400).json({ message: err.message });

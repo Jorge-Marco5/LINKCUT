@@ -1,4 +1,4 @@
-import Router from "express";
+import { Router } from "express";
 import linkRoutes from "@/routes/api/linksRoutes/link.routes";
 import qrcodeRoutes from "@/routes/api/qrcodeRoutes/qrcode.routes";
 import { authMiddleware } from "@/utils/auth";
@@ -13,7 +13,7 @@ router.get("/", authMiddleware("user"), (req, res) => {
 router.use("/auth", authRoutes);
 
 router.use("/link", authMiddleware("user"), linkRoutes);
-router.use("/stats", authMiddleware("user"), linkRoutes);
 router.use("/qrcode", authMiddleware("user"), qrcodeRoutes);
+router.use("/stats", authMiddleware("user"), linkRoutes);
 
 export default router;
