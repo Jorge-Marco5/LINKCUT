@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="description" content="Aplicacion para recortar enlaces y generacion de codigos QR">
+    <meta name="keywords" content="pulsar, recortar enlaces, codigos QR">
+    <meta name="author" content="Jorge Marcos">
+
+    <link href="https://fonts.cdnfonts.com/css/euclid-circular-a" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
+    
+    <title>Pulsar</title>
+
+    <link rel="stylesheet" href="css/style.css">
+    <script src="js/lib/axios.min.js"></script>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <a href="/" class="brand">
+            <i class="fa-solid fa-link"></i> LINKCUT
+        </a>
+        <div class="nav-links">
+            <a href="#" class="nav-link active">Dashboard</a>
+            <a href="#" class="nav-link">Analytics</a>
+            <a href="#" class="nav-link">Integrations</a>
+        </div>
+        <div class="user-actions">
+            <button class="icon-btn">
+                <i class="fa-regular fa-bell"></i>
+            </button>
+            <button class="icon-btn">
+                <i class="fa-regular fa-user"></i>
+            </button>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- Hero Section -->
+        <section class="hero">
+            <h1>Streamline Your Digital Footprint.</h1>
+            <p>Ultra-minimalist URL management for modern creators.</p>
+        </section>
+
+        <!-- Main Input Area -->
+        <form id="shorten-form" class="input-group-wrapper">
+            <div class="input-icon">
+                <i class="fa-solid fa-link"></i>
+            </div>
+            <input type="url" name="url" class="main-input" placeholder="Paste your long URL here..." required autocomplete="off">
+            <button type="submit" class="btn-scan">
+                Shorten <i class="fa-solid fa-arrow-right"></i>
+            </button>
+        </form>
+
+        <!-- Recent Activity Header -->
+        <div class="section-header">
+            <div class="section-title">
+                <i class="fa-solid fa-clock-rotate-left"></i> RECENT ACTIVITY
+            </div>
+        </div>
+
+        <!-- Activity List -->
+        <div id="list-shorts"></div>
+    </div>
+
+    <footer>
+        <p>&copy; 2023 LinkCut Systems. All rights reserved.</p>
+    </footer>
+
+    <script src="js/api.js"></script>
+</body>
+</html>

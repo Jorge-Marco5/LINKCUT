@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up | Pulsar</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <script src="../js/lib/axios.min.js"></script>
+</head>
+<body>
+    <div class="auth-wrapper">
+        <div class="auth-box">
+            <a href="/auth/login" class="brand">
+                <i class="fa-solid fa-link"></i> LINKCUT
+            </a>
+            <h1>Create Account</h1>
+            <p>Start your journey with Pulsar</p>
+
+            <% if (locals.error) { %>
+                <div style="color: var(--danger-color); margin-bottom: 20px; font-size: 0.9rem;">
+                    <%= error %>
+                </div>
+            <% } %>
+
+            <form id="signupForm" method="POST">
+                <div class="form-field">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" placeholder="johndoe" required>
+                </div>
+
+                <div class="form-field">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" placeholder="you@example.com" required>
+                </div>
+                
+                <div class="form-field">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" placeholder="Create a strong password" required>
+                </div>
+
+                <button type="submit" class="btn-full">Sign Up</button>
+            </form>
+
+            <div class="auth-footer">
+                <p>Already have an account? <a href="/auth/login">Sign in</a></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById("signupForm").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const formData = Object.fromEntries(new FormData(e.target));
+            try {
+                const response = await axios.post("/api/auth/signup", 
+                formData,
+                {
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                }
+            );
+            if (response.status === 200) {
+                window.location.href = "/auth/login";
+            }
+            console.log(response.data);
+            } catch (error) {
+                console.error(error);
+            }
+        });
+    </script>
+</body>
+</html>

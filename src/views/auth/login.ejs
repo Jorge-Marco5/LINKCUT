@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | Pulsar</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <script src="../js/lib/axios.min.js"></script>
+</head>
+<body>
+    <div class="auth-wrapper">
+        <div class="auth-box">
+            <a href="/auth/login" class="brand" style="text-decoration: none; display: flex; justify-content: center; align-items: center;">
+                <i class="fa-solid fa-link"></i> LINKCUT
+            </a>
+            <h2>Welcome Back</h2>
+            <p>Sign in to your account</p>
+
+            <% if (locals.error) { %>
+                <div style="color: var(--danger-color); margin-bottom: 20px; font-size: 0.9rem;">
+                    <%= error %>
+                </div>
+            <% } %>
+            <% if (locals.success) { %>
+                <div style="color: var(--success-color); margin-bottom: 20px; font-size: 0.9rem;">
+                    <%= success %>
+                </div>
+            <% } %>
+
+            <form id="loginForm" action="/api/auth/login" method="POST">
+                <div class="form-field">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" placeholder="you@example.com" required>
+                </div>
+                
+                <div class="form-field">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" placeholder="Your password" required>
+                </div>
+
+                <button type="submit" class="btn-full">Sign In</button>
+            </form>
+
+            <div class="auth-footer">
+                <p>Don't have an account? <a href="/auth/signup">Sign up</a></p>
+                <p style="margin-top: 8px;"><a href="/auth/changepassword">Forgot your password?</a></p>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        document.getElementById("loginForm").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const formData = Object.fromEntries(new FormData(e.target));
+            try {
+                const response = await axios.post("/api/auth/login", formData);
+                window.location.href = '/';
+            } catch (error) {
+                console.error(error);
+                const errorMsg = error.response?.data?.message || "Login failed";
+                alert(errorMsg);
+            }
+        });
+    </script>
+</body>
+</html>
