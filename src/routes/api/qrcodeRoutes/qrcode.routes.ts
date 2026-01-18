@@ -1,12 +1,21 @@
 import { Router, Request, Response } from "express";
-import { postQRCodeController } from "@/controllers/qrcodeControllers/qrcode.controller";
+import { generateQRCodeController, getQRCodeController, registerQRCodeController, deleteQRCodeController, updateQRCodeController } from "@/controllers/qrcodeControllers/qrcode.controller";
 
 const router = Router();
 
-router.get("/", (_req: Request, res: Response) => {
-  res.json({ message: "QR Code Generator" });
-});
+// listar los qr codes
+router.get("/", getQRCodeController);
 
-router.post("/", postQRCodeController);
+// crear un qr code
+router.post("/generate", generateQRCodeController);
+
+// registrar un texto para qr code
+router.post("/", registerQRCodeController); 
+
+// eliminar un qr code
+router.delete("/:id", deleteQRCodeController);
+
+// actualizar texto un qr code
+router.put("/", updateQRCodeController);
 
 export default router;

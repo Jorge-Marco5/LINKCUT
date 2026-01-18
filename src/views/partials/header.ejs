@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="title" content="LINKCUT">
+    <meta name="description" content="Aplicacion para recortar enlaces y generacion de codigos QR">
+    <meta name="keywords" content="recortar enlaces, codigos QR">
+    <meta name="author" content="Jorge Marcos">
+
+    <link href="https://fonts.cdnfonts.com/css/euclid-circular-a" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <title>LINKCUT</title>
+
+    <link rel="stylesheet" href="css/style.css">
+    <script src="js/lib/axios.min.js"></script>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <a href="/" class="brand">
+            <i class="fa-solid fa-link"></i> LINKCUT
+        </a>
+
+        <div class="nav-links" id="nav-links">
+            <button class="close-sidebar" id="close-sidebar-btn">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            
+            <a href="/" class="nav-link <%= path === '/' ? 'active' : '' %>">Dashboard</a>
+            <a href="/qrcode" class="nav-link <%= path === '/qrcode' ? 'active' : '' %>">QR Code</a>
+        </div>
+        <div class="user-actions">
+            <div class="notification-wrapper">
+                <button class="icon-btn" id="notification-btn">
+                    <i class="fa-regular fa-bell"></i>
+                </button>
+                <div class="dropdown" id="notification-dropdown">
+                    <div class="dropdown-item">
+                        <i class="fa-regular fa-bell"></i>
+                        <span class="notification-text">Sin notificaciones</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="user-menu-wrapper">
+                <button class="icon-btn" id="user-menu-btn">
+                    <i class="fa-regular fa-user"></i>
+                </button>
+                <div class="dropdown" id="user-dropdown">
+                    <% if (locals.user) { %>
+                        <div class="user-info">
+                            <span class="user-name"><%= user.username %></span>
+                            <span class="user-email"><%= user.email %></span>
+                        </div>
+                        <div class="dropdown-divider"></div>
+                        <button id="logout-btn" class="dropdown-item danger">
+                            <i class="fa-solid fa-right-from-bracket"></i> Logout
+                        </button>
+                    <% } %>
+                </div>
+            </div>
+            <button class="hamburger" id="hamburger-btn">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+        </div>
+    </nav>
+    <div class="nav-overlay" id="nav-overlay"></div>

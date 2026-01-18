@@ -1,0 +1,37 @@
+<main class="container">
+    <!-- Hero Section -->
+    <section class="hero">
+        <h1>Huellas digitales visuales.</h1>
+        <p>Genera códigos QR personalizados de forma sencilla y eficiente.</p>
+    </section>
+
+    <!-- Main Input Area -->
+    <form id="qr-form" class="input-group-wrapper">
+        <div class="input-icon">
+            <i class="fa-solid fa-qrcode" aria-hidden="true"></i>
+        </div>
+        <input 
+            type="text" 
+            name="text" 
+            id="qr-input"
+            class="main-input" 
+            placeholder="Introduce el texto o URL para tu QR..." 
+            required 
+            autocomplete="off"
+            aria-label="Texto para código QR"
+        >
+        <button type="submit" class="btn-scan">
+            Generar <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+        </button>
+    </form>
+
+    <!-- Recent Activity Header -->
+    <header class="section-header">
+        <h2 class="section-title">
+            <i class="fa-solid fa-clock-rotate-left" aria-hidden="true"></i> QRs Recientes
+        </h2>
+    </header>
+
+    <!-- Activity List -->
+    <section id="list-qr" aria-live="polite"></section>
+</main>

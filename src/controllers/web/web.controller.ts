@@ -2,7 +2,18 @@ import { Request, Response } from "express";
 
 export const dashboardController = (req: Request, res: Response) => {
     try{
-        res.render(`${__dirname}/../../views/index.ejs`, { user: req.user });
+        res.render(`${__dirname}/../../views/index.ejs`, { user: req.user, path: '/' });
+    }catch(error){
+        console.log(error);
+        res.status(500).json({
+            message: "Error al cargar la página"
+        });
+    }
+}
+
+export const qrcodeController = (req: Request, res: Response) => {
+    try{
+        res.render(`${__dirname}/../../views/index.ejs`, { user: req.user, path: '/qrcode' });
     }catch(error){
         console.log(error);
         res.status(500).json({

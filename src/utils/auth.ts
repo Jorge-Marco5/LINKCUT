@@ -8,8 +8,9 @@ const JWT_SECRET = process.env.JWT_SECRET || "supersecretkey";
 export async function register(username: string, email: string, password: string) {
     const db = await openDb();
     const hashedPassword = await bcrypt.hash(password, 10);
+    const createdAt = new Date().toISOString();
     try {
-        await db.run("INSERT INTO users (username, email, password, role) VALUES (?, ?, ?, ?)", username, email, hashedPassword, "user");
+        await db.run("INSERT INTO users(username, email, password, role, created_at) VALUES (?, ?, ?, ?, ?)", username, email, hashedPassword, "user", createdAt);
         return { message: "Usuario registrado correctamente" };
     } catch (err) {
         throw new Error("El usuario ya existe");

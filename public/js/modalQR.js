@@ -1,11 +1,3 @@
-/**
- * Crea y muestra un modal con la imagen del código QR y opciones para cerrar o descargar.
- * @param {string} qrDataUrl - La URL de datos (Base64) o ruta de la imagen del QR.
- */
-/**
- * Crea y muestra un modal con la imagen del código QR y opciones para cerrar o descargar.
- * @param {string} linkUrl - La URL para generar el QR.
- */
 async function showQRModal(linkUrl) {
     
     // Create modal structure
@@ -47,7 +39,7 @@ async function showQRModal(linkUrl) {
     };
 
     try {
-        const response = await axios.post('/api/qrcode', { text: linkUrl });
+        const response = await axios.post('/api/qrcode/generate', { text: linkUrl });
         const qrDataUrl = response.data.data.qr;
 
         // Update modal content with QR code
@@ -58,9 +50,9 @@ async function showQRModal(linkUrl) {
                 <img src="${qrDataUrl}" alt="QR Code" class="qr-image">
             </div>
             <div class="modal-actions">
-                <button id="close-qr-modal-btn" class="btn-secondary">Close</button>
-                <a href="${qrDataUrl}" download="qr-code-pulsar.png" style="flex: 1; text-decoration: none;">
-                    <button class="btn-download">Download</button>
+                <button id="close-qr-modal-btn" class="btn btn-secondary">Close</button>
+                <a href="${qrDataUrl}" download="LINKCUT-qr-code.png" style="flex: 1; text-decoration: none;">
+                    <button class="btn btn-download">Download</button>
                 </a>
             </div>
         `;

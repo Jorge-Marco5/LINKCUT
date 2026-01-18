@@ -29,11 +29,12 @@ if (!PORT) {
 //rutas de la API
 app.use("/api", apiRoutes);
 
+// rutas de la web
+app.use("/", webRoutes);
+
 // direccionamiento del acortador
 app.get("/:shortUrl", shortUrlRoutes);
 
-// rutas de la web
-app.use("/", webRoutes);
 
 checkDb();
 app.listen(PORT, () => {

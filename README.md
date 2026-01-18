@@ -1,11 +1,13 @@
 # LINKCUT
 
-Aplicacion web para acortar enlaces con panel de administracion
+Aplicacion web para acortar enlaces con panel de administracion y estadisticas de clics
 
 ## Caracteristicas
 
 - Panel de administracion
 - Generacion de enlaces cortos
+- Estadisticas de clics
+- Generacion de QR del enlace
 
 ## Instalacion
 

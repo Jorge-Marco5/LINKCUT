@@ -1,11 +1,12 @@
 import { Request, Response } from "express";
-import { getLinkService, clickService } from "@/services/link.service";
+import { LinkModel } from "@/models/link.model";
+import { Click, ClickModel } from "@/models/click.model";
+
 
 export const shortUrlController = async (req: Request, res: Response) => {
   const { shortUrl } = req.params;
   try {
-    const link = await getLinkService(shortUrl.toString());
-
+    const link = await LinkModel.shortUrl(shortUrl.toString());
     if (!link) {
       return res.status(404).json({
         status: "error",
@@ -16,7 +17,7 @@ export const shortUrlController = async (req: Request, res: Response) => {
       });
     }
 
-    await clickService(link.id);
+    await ClickModel.createClick(new Click(0, link.id, new Date().toISOString()));
     return res.redirect(link.url);
   } catch (error) {
     console.error(error);

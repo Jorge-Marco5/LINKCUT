@@ -1,0 +1,37 @@
+<main class="container">
+    <!-- Hero Section -->
+    <section class="hero">
+        <h1>Optimice su huella digital.</h1>
+        <p>Gestión de URL ultraminimalista para creadores modernos.</p>
+    </section>
+
+    <!-- Main Input Area -->
+    <form id="shorten-form" class="input-group-wrapper">
+        <div class="input-icon">
+            <i class="fa-solid fa-link" aria-hidden="true"></i>
+        </div>
+        <input 
+            type="url" 
+            name="url" 
+            id="url-input"
+            class="main-input" 
+            placeholder="Pega tu enlace largo aquí..." 
+            required 
+            autocomplete="off"
+            aria-label="URL a acortar"
+        >
+        <button type="submit" class="btn-scan">
+            Acortar <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+        </button>
+    </form>
+
+    <!-- Recent Activity Header -->
+    <header class="section-header">
+        <h2 class="section-title">
+            <i class="fa-solid fa-clock-rotate-left" aria-hidden="true"></i> Actividad reciente
+        </h2>
+    </header>
+
+    <!-- Activity List -->
+    <section id="list-shorts" aria-live="polite"></section>
+</main>

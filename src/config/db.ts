@@ -52,7 +52,6 @@ export async function initDb() {
             FOREIGN KEY (user_id) REFERENCES users (id)
         );
 
-        --estadisticas de clicks
         CREATE TABLE IF NOT EXISTS clicks (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             url_id INTEGER,
@@ -60,12 +59,12 @@ export async function initDb() {
             FOREIGN KEY (url_id) REFERENCES urls (id)
         );
 
-        CREATE TABLE IF NOT EXISTS qr_codes (
+        CREATE TABLE IF NOT EXISTS textqr (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            qr_code TEXT UNIQUE,
-            url_id INTEGER,
+            text TEXT,
+            user_id INTEGER,
             created_at TEXT,
-            FOREIGN KEY (url_id) REFERENCES urls (id)
+            FOREIGN KEY (user_id) REFERENCES users (id)
         );
     `);
 }
