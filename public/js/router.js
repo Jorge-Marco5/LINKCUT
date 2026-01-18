@@ -1,7 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
     const views = {
         '/': document.getElementById('view-dashboard'),
-        '/qrcode': document.getElementById('view-qrcode')
+        '/qrcode': document.getElementById('view-qrcode'),
+        '/analytics': document.getElementById('view-analytics')
     };
 
     const navLinks = document.querySelectorAll('.nav-link');

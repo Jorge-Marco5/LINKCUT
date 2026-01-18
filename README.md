@@ -4,17 +4,19 @@ Aplicacion web para acortar enlaces con panel de administracion y estadisticas d
 
 ## Caracteristicas
 
+- autenticación
 - Panel de administracion
 - Generacion de enlaces cortos
 - Estadisticas de clics
-- Generacion de QR del enlace
+- Codigo QR del enlace
+- Generacion de codigos QR de un texto
 
 ## Instalacion
 
 Clonar el repositorio
 
 ```bash
-git clone https://github.com/your-username/linkcut.git
+git clone https://github.com/Jorge-Marco5/LINKCUT.git
 ```
 
 Instalar dependencias

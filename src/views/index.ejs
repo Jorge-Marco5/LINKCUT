@@ -3,8 +3,11 @@
     <div id="view-dashboard" class="view-section" style="display: <%= path === '/' ? 'block' : 'none' %>;">
         <%- include("./layout/shortUrl.ejs") %>
     </div>
-    <div id="view-qrcode" class="view-section" style="display: <%= path === '/' ? 'block' : 'none' %>;">
+    <div id="view-qrcode" class="view-section" style="display: <%= path === '/qrcode' ? 'block' : 'none' %>;">
         <%- include("./layout/qrcode.ejs") %>
+    </div>
+    <div id="view-analytics" class="view-section" style="display: <%= path === '/analytics' ? 'block' : 'none' %>;">
+        <%- include("./layout/analytics.ejs") %>
     </div>
 
 <%- include('./partials/footer') %>

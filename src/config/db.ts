@@ -66,5 +66,14 @@ export async function initDb() {
             created_at TEXT,
             FOREIGN KEY (user_id) REFERENCES users (id)
         );
+
+        CREATE TABLE IF NOT EXISTS notifications (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id INTEGER,
+            title TEXT,
+            message TEXT,
+            created_at TEXT,
+            FOREIGN KEY (user_id) REFERENCES users (id)
+        );
     `);
 }

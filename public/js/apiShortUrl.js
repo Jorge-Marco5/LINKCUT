@@ -15,6 +15,9 @@ async function listLinks() {
                 <div class="link-card">
                     <div class="card-left">
                         <div style="display: flex; align-items: center; gap: 8px;">
+                            <div style="min-width: 40px; height: 40px; background: rgba(6,182,212,0.1); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: var(--accent-color);">
+                                <i class="fa-solid fa-link"></i>
+                            </div>
                             <a href="${urlActual}${short.short_url}" target="_blank" class="short-url">
                                 ${urlActual}${short.short_url} 
                             </a>
@@ -25,11 +28,10 @@ async function listLinks() {
                     </div>
                 </div>
                 <div class="card-right" style="display: flex; align-items: center; gap: 32px;">
-                     <div style="width: 120px; height: 60px;">
-                        <canvas id="chart-${short.id}"></canvas>
-                     </div>
-
-                    <div class="card-stats">
+                <div style="width: 120px; height: 60px;">
+                   <canvas id="chart-${short.id}"></canvas>
+                </div>
+                <div class="card-stats">
                         <div class="stat-item">
                             <span class="stat-label">CLICKS</span>
                             <span class="stat-value">${short.clicks}</span>

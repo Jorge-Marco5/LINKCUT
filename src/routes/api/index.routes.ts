@@ -3,7 +3,7 @@ import linkRoutes from "@/routes/api/linksRoutes/link.routes";
 import qrcodeRoutes from "@/routes/api/qrcodeRoutes/qrcode.routes";
 import { authMiddleware } from "@/utils/auth";
 import authRoutes from "@/routes/api/auth/auth.routes";
-import userRoutes from "@/routes/api/auth/userRoutes/user.routes";
+import userRoutes from "@/routes/api/userRoutes/user.routes";
 const router = Router();
 
 router.get("/", authMiddleware("user"), (req, res) => {

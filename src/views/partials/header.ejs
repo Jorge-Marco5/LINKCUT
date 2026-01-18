@@ -30,9 +30,9 @@
             <button class="close-sidebar" id="close-sidebar-btn">
                 <i class="fa-solid fa-xmark"></i>
             </button>
-            
-            <a href="/" class="nav-link <%= path === '/' ? 'active' : '' %>">Dashboard</a>
-            <a href="/qrcode" class="nav-link <%= path === '/qrcode' ? 'active' : '' %>">QR Code</a>
+            <a href="/" class="nav-link <%= locals.path === '/' ? 'active' : '' %>">Dashboard</a>
+            <a href="/qrcode" class="nav-link <%= locals.path === '/qrcode' ? 'active' : '' %>">QR Code</a>
+            <a href="/analytics" class="nav-link <%= locals.path === '/analytics' ? 'active' : '' %>">Analytics</a>
         </div>
         <div class="user-actions">
             <div class="notification-wrapper">
