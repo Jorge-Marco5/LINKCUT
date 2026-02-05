@@ -1,6 +1,12 @@
 # LINKCUT
 
-Aplicacion web para acortar enlaces con panel de administracion y estadisticas de clics
+Aplicacion web ligera para acortar enlaces con panel de administracion y estadisticas de clics
+
+## Herramientas
+
+- **Backend:** Typescript
+- **Frontend:** EJS
+- **Base de datos:** SQLite
 
 ## Caracteristicas
 
@@ -11,7 +17,7 @@ Aplicacion web para acortar enlaces con panel de administracion y estadisticas d
 - Codigo QR del enlace
 - Generacion de codigos QR de un texto
 
-## Instalacion
+## Instalación
 
 Clonar el repositorio
 
