@@ -1,0 +1,96 @@
+<div class="url-details-container" style="margin-top: 100px;">
+    <!-- Hero Section -->
+    <section class="hero">
+        <p><strong>Analíticas de URL</strong> Información detallada sobre el rendimiento de tus enlaces.</p>
+    </section>
+
+    <!-- Header Card -->
+    <div class="card url-header-card" style="display: flex; justify-content: space-between; align-items: center;">
+        <div class="url-header-info">
+            <h1 class="short-url-title" id="detail-short-url">Cargando... <span class="badge active" id="detail-status"
+                    style="display:none;">Active</span></h1>
+            <p class="long-url-text" id="detail-long-url"><i class="fa-solid fa-link"></i> Cargando...</p>
+        </div>
+        <div class="header-actions">
+            <button class="btn-action" id="btn-toggle-status"
+                style="background: var(--bg-primary); border: 1px solid var(--border-color); color: var(--text-primary);"><i
+                    class="fa-solid fa-power-off"></i> <span>Desactivar</span></button>
+        </div>
+    </div>
+    <!-- Main Grid -->
+    <div class="url-details-grid">
+        <!-- Left Column: Click Performance -->
+        <div class="card click-performance-card">
+            <div class="card-header">
+                <h3 class="card-title">Click Performance</h3>
+                <div class="time-filters">
+                    <button class="filter-btn active">30D de historial</button>
+                </div>
+            </div>
+            <div class="chart-container">
+                <canvas id="detail-chart"></canvas>
+            </div>
+            <h3 class="card-title" style="margin-top: 20px;">Text analysis</h3>
+            <div id="description-analitycs"></div>
+
+            <h3 class="card-title"
+                style="margin-top: 20px; border-top: 1px solid var(--border-color); padding-top:20px;">Global Reach</h3>
+            <div class="locations-list" id="detail-locations-list" style="margin-top: 15px;">
+                <!-- Las localizaciones se renderizan aqui -->
+                <p style="text-align: center; color: var(--text-secondary);">Cargando países...</p>
+            </div>
+        </div>
+
+        <!-- Right Column -->
+        <div class="right-column-grid">
+            <!-- QR Code Card -->
+            <div class="card qr-code-card text-center">
+                <h3 class="card-title text-left">QR CODE</h3>
+                <div class="qr-wrapper flex-center">
+                    <img id="detail-qr-img" src="" alt="QR Code"
+                        style="display: none; width: 140px; height: 140px; background: white; padding: 10px; border-radius: 8px;">
+                    <div id="qr-loading">Cargando...</div>
+                </div>
+                <button class="btn-download-qr" id="btn-download-qr">DOWNLOAD QR</button>
+            </div>
+            <!-- Stats Mini Cards -->
+            <div class="card mini-stat-card">
+                <div class="stat-info">
+                    <span class="stat-label">LAST 24 HOURS</span>
+                    <h2 class="stat-value" id="detail-last-24">+0</h2>
+                </div>
+                <div class="stat-icon click-icon">
+                    <i class="fa-solid fa-bolt"></i>
+                </div>
+            </div>
+
+            <div class="card mini-stat-card">
+                <div class="stat-info">
+                    <span class="stat-label">TOTAL CLICKS</span>
+                    <h2 class="stat-value" id="detail-total-clicks">0</h2>
+                </div>
+                <div class="stat-icon click-icon">
+                    <i class="fa-solid fa-hand-pointer"></i>
+                </div>
+            </div>
+
+            <div class="card mini-stat-card">
+                <div class="stat-info">
+                    <span class="stat-label">CREATED</span>
+                    <h2 class="stat-value" id="detail-created-date">-</h2>
+                </div>
+                <div class="stat-icon calendar-icon">
+                    <i class="fa-regular fa-calendar"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Bottom Actions -->
+    <div class="url-bottom-actions card">
+        <button class="btn-action primary" id="btn-copy-detail"><i class="fa-regular fa-copy"></i> Copy Link</button>
+        <button class="btn-action secondary"><i class="fa-solid fa-share-nodes"></i> Share</button>
+        <button class="btn-action danger" id="btn-delete-detail"><i class="fa-solid fa-trash"></i> Delete URL</button>
+    </div>
+</div>
+
+<script src="/js/apiUrlDetails.js"></script>

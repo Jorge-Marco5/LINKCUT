@@ -49,6 +49,7 @@ export async function initDb() {
             short_url TEXT UNIQUE,
             user_id INTEGER,
             created_at TEXT,
+            is_active INTEGER DEFAULT 1,
             FOREIGN KEY (user_id) REFERENCES users (id)
         );
 
@@ -56,6 +57,7 @@ export async function initDb() {
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             url_id INTEGER,
             created_at TEXT,
+            country TEXT,
             FOREIGN KEY (url_id) REFERENCES urls (id)
         );
 

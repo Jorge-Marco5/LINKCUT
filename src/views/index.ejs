@@ -9,5 +9,8 @@
     <div id="view-analytics" class="view-section" style="display: <%= path === '/analytics' ? 'block' : 'none' %>;">
         <%- include("./layout/analytics.ejs") %>
     </div>
+    <div id="view-url-details" class="view-section" style="display: <%= path === '/link' ? 'block' : 'none' %>;">
+        <%- include("./layout/urlDetails.ejs") %>
+    </div>
 
-<%- include('./partials/footer') %>
+    <%- include('./partials/footer') %>

@@ -10,7 +10,7 @@ router.get("/", authMiddleware("user"), (req, res) => {
     res.send("Hello World!");
 });
 
-router.use("/user",authMiddleware("admin"), userRoutes);
+router.use("/user", authMiddleware("admin"), userRoutes);
 
 router.use("/auth", authRoutes);
 router.use("/link", authMiddleware("user"), linkRoutes);

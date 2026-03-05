@@ -7,10 +7,10 @@ async function listLinks() {
                 Authorization: `Bearer ${localStorage.getItem("token")}`
             }
         });
-        
+
         //url actual
         const urlActual = window.location.href;
-        if(data.data.length > 0){
+        if (data.data.length > 0) {
             listShorts.innerHTML = data.data.map(short => `
                 <div class="link-card">
                     <div class="card-left">
@@ -43,6 +43,9 @@ async function listLinks() {
                     </div>
                     
                     <div class="card-actions">
+                    <button onclick="location.href='/link/${short.id}'" class="icon-btn" style="width: 32px; height: 32px; border: none; background: transparent;">
+                             <i class="fa-solid fa-chart-line"></i>
+                        </button>
                         <button onclick="showQRModal('${urlActual}${short.short_url}')" class="icon-btn" style="width: 32px; height: 32px; border: none; background: transparent;">
                              <i class="fa-solid fa-qrcode"></i>
                         </button>
@@ -53,13 +56,13 @@ async function listLinks() {
                 </div>
             </div>
         `).join("");
-        
-        // Render charts for each link
-        data.data.forEach(short => {
-            renderChart(short.id);
-        });
 
-        }else{
+            // Render charts for each link
+            data.data.forEach(short => {
+                renderChart(short.id);
+            });
+
+        } else {
             listShorts.innerHTML = `
             <div class="link-card">
                 <p>No hay enlaces</p>
@@ -135,7 +138,7 @@ if (logoutBtn) {
         }
     });
 }
-    
+
 
 /**
  * Notification Dropdown Logic
@@ -161,27 +164,27 @@ async function renderChart(id) {
         const response = await axios.get(`/api/link/stats/${id}`, {
             headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
         });
-        
+
         const stats = response.data.data; // Array of { day: 'YYYY-MM-DD', clicks: number }
 
         // Generate labels and data for the last 7 days (including today)
         const labels = [];
         const dataPoints = [];
-        
+
         for (let i = 6; i >= 0; i--) {
             const date = new Date();
             date.setDate(date.getDate() - i);
             const dateStr = date.toISOString().split('T')[0]; // YYYY-MM-DD
-            
+
             labels.push(date.toLocaleDateString('en-US', { weekday: 'short' })); // e.g., Mon, Tue
-            
+
             // Find stats for this day
             const dayStat = stats.find(s => s.day === dateStr);
             dataPoints.push(dayStat ? dayStat.clicks : 0);
         }
 
         const ctx = document.getElementById(`chart-${id}`);
-        if(!ctx) return;
+        if (!ctx) return;
 
         new Chart(ctx, {
             type: 'line',

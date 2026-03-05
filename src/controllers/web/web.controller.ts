@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
 
 export const dashboardController = (req: Request, res: Response) => {
-    try{
+    try {
         res.render(`${__dirname}/../../views/index.ejs`, { user: req.user, path: '/' });
-    }catch(error){
+    } catch (error) {
         console.log(error);
         res.status(500).json({
             message: "Error al cargar la página"
@@ -12,9 +12,9 @@ export const dashboardController = (req: Request, res: Response) => {
 }
 
 export const qrcodeController = (req: Request, res: Response) => {
-    try{
+    try {
         res.render(`${__dirname}/../../views/index.ejs`, { user: req.user, path: '/qrcode' });
-    }catch(error){
+    } catch (error) {
         console.log(error);
         res.status(500).json({
             message: "Error al cargar la página"
@@ -23,9 +23,32 @@ export const qrcodeController = (req: Request, res: Response) => {
 }
 
 export const analyticsController = (req: Request, res: Response) => {
-    try{
+    try {
         res.render(`${__dirname}/../../views/index.ejs`, { user: req.user, path: '/analytics' });
-    }catch(error){
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            message: "Error al cargar la página"
+        });
+    }
+}
+
+export const urlDetailsController = (req: Request, res: Response) => {
+    try {
+        res.render(`${__dirname}/../../views/index.ejs`, { user: req.user, path: '/link' });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            message: "Error al cargar la página"
+        });
+    }
+}
+
+export const inactiveController = (req: Request, res: Response) => {
+    try {
+        const msg = req.query.msg;
+        res.render(`${__dirname}/../../views/layout/inactive.ejs`, { user: req.user || null, path: '/inactive', msg });
+    } catch (error) {
         console.log(error);
         res.status(500).json({
             message: "Error al cargar la página"
@@ -34,9 +57,9 @@ export const analyticsController = (req: Request, res: Response) => {
 }
 
 export const loginController = (req: Request, res: Response) => {
-    try{
+    try {
         res.render(`${__dirname}/../../views/auth/login.ejs`);
-    }catch(error){
+    } catch (error) {
         console.log(error);
         res.status(500).json({
             message: "Error al cargar la página"
@@ -45,9 +68,9 @@ export const loginController = (req: Request, res: Response) => {
 }
 
 export const signupController = (req: Request, res: Response) => {
-    try{
+    try {
         res.render(`${__dirname}/../../views/auth/signup.ejs`);
-    }catch(error){
+    } catch (error) {
         console.log(error);
         res.status(500).json({
             message: "Error al cargar la página"
@@ -56,9 +79,9 @@ export const signupController = (req: Request, res: Response) => {
 }
 
 export const changepasswordController = (req: Request, res: Response) => {
-    try{
+    try {
         res.render(`${__dirname}/../../views/auth/changepassword.ejs`);
-    }catch(error){
+    } catch (error) {
         console.log(error);
         res.status(500).json({
             message: "Error al cargar la página"

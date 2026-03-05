@@ -19,12 +19,12 @@ export const loginController = async (req: Request, res: Response) => {
     try {
         const { email, password } = req.body;
         const result = await login(email, password);
-        
+
         // Set cookie
         res.cookie("token", result.token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production", // true in production
-            maxAge: 3600000 // 1 hour
+            maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
         });
 
         res.json({ message: "Usuario logueado correctamente" });

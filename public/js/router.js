@@ -2,18 +2,22 @@ document.addEventListener('DOMContentLoaded', () => {
     const views = {
         '/': document.getElementById('view-dashboard'),
         '/qrcode': document.getElementById('view-qrcode'),
-        '/analytics': document.getElementById('view-analytics')
+        '/analytics': document.getElementById('view-analytics'),
+        '/link': document.getElementById('view-url-details')
     };
 
     const navLinks = document.querySelectorAll('.nav-link');
 
+    // Function to get base path for dynamic URLs
+    const getBasePath = (path) => path.startsWith('/link/') ? '/link' : path;
+
     // Handle initial load
     const path = window.location.pathname;
-    if (views[path]) {
-        showView(path);
+    if (views[getBasePath(path)]) {
+        showView(getBasePath(path));
     } else {
         // Default to dashboard
-        showView('/'); 
+        showView('/');
     }
 
     // Handle navigation clicks
@@ -21,10 +25,10 @@ document.addEventListener('DOMContentLoaded', () => {
         link.addEventListener('click', (e) => {
             e.preventDefault();
             const targetPath = link.getAttribute('href');
-            
-            if (views[targetPath]) {
+
+            if (views[getBasePath(targetPath)]) {
                 history.pushState(null, '', targetPath);
-                showView(targetPath);
+                showView(getBasePath(targetPath));
             }
         });
     });
@@ -32,8 +36,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // Handle back/forward browser buttons
     window.addEventListener('popstate', () => {
         const path = window.location.pathname;
-        if (views[path]) {
-            showView(path);
+        if (views[getBasePath(path)]) {
+            showView(getBasePath(path));
         }
     });
 
