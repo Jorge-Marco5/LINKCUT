@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enlace inactivo</title>
+    <link rel="icon" href="/img/favicon.ico" type="image/x-icon">
+    <link href="https://fonts.cdnfonts.com/css/euclid-circular-a" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<div class="url-details-container" style="margin-top: 100px; text-align: center;">
+    <!-- Hero Section -->
+    <section class="hero" style="padding: 60px 20px;">
+        <i class="fa-solid fa-lock" style="font-size: 3rem; color: var(--danger-color); margin-bottom: 20px;"></i>
+        <h1>URL protegida!</h1>
+        <p
+            style="margin-top: 15px; color: var(--text-secondary); max-width: 500px; margin-left: auto; margin-right: auto;">
+            El enlace al que intentas acceder requiere una contraseña.
+        </p>
+        <form id="protect-form" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
+            <div style="margin: 20px 0; width: 100%;">
+                <input type="password" name="password" id="password" placeholder="*********" required
+                    style="width: 100%; padding: 10px; text-align: center; background: var(--bg-primary); border: 1px solid var(--border-color); color: var(--text-primary); border-radius: 6px;">
+            </div>
+            <button type="submit" class="btn-action primary">Ingresar</button>
+        </form>
+        <p id="error-message" style="color: var(--danger-color); margin-top: 15px; display: none;"></p>
+    </section>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+    const protectForm = document.getElementById("protect-form");
+    const errorMessage = document.getElementById("error-message");
+
+    // Extraer el hash url desde el parametro GET ?url=
+    const urlParams = new URLSearchParams(window.location.search);
+    const shortUrl = urlParams.get('url');
+
+    if (!shortUrl) {
+        errorMessage.textContent = "URL inválida o no proporcionada.";
+        errorMessage.style.display = "block";
+        protectForm.querySelector("button").disabled = true;
+    }
+
+    protectForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        errorMessage.style.display = "none";
+        const password = document.getElementById("password").value;
+
+        try {
+            // Hacer el llamado a protectLinkController que por default mapeaste como PUT /api/link/:id/protect 
+            // pero pasandole el query ?short_url=
+            const response = await axios.put('/api/link/0/protect?short_url=' + shortUrl, {
+                password: password
+            });
+
+            // Si la validacion es correcta y el código bcrypt sirvió, el server devuelve el enlace original en data
+            if (response.data.status === "success") {
+                window.location.href = response.data.data;
+            }
+        } catch (error) {
+            console.error(error);
+            errorMessage.textContent = error.response?.data?.message || "Error al validar la contraseña.";
+            errorMessage.style.display = "block";
+        }
+    });
+</script>
+</body>
+
+</html>

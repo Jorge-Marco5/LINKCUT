@@ -1,9 +1,16 @@
 import { Request, Response } from "express";
 import { Link, LinkModel } from "@/models/link.model";
+import { Click, ClickModel } from "@/models/click.model";
+import dotenv from "dotenv";
+dotenv.config();
+import bcrypt from "bcrypt";
 
 export const getLinksController = async (req: Request, res: Response) => {
     try {
         const userId = req.user?.id;
+        const page = Number(req.query.page) || 1;
+        const limit = Number(req.query.limit) || 5;
+        const offset = (page - 1) * limit;
         if (!userId) {
             return res.status(401).json({
                 status: "error", code: 401,
@@ -12,8 +19,22 @@ export const getLinksController = async (req: Request, res: Response) => {
                 errors: "No autenticado"
             });
         }
-        const links = await LinkModel.getLinks(userId as number);
-        res.json({ status: "success", code: 200, message: "Links obtenidos exitosamente", data: links, errors: null });
+        const { getLink, total } = await LinkModel.getLinks(userId as number, page, limit, offset);
+        res.json({
+            status: "success",
+            code: 200,
+            message: "Links obtenidos exitosamente",
+            data: {
+                links: getLink,
+                meta: {
+                    total: total,
+                    page: page,
+                    limit: limit,
+                    totalPages: Math.ceil(total / limit)
+                }
+            },
+            errors: null
+        });
     } catch (err: any) {
         res.status(500).json({
             status: "error", code: 500,
@@ -145,6 +166,83 @@ export const getStatsLocationsController = async (req: Request, res: Response) =
     }
 }
 
+export const updateLinkController = async (req: Request, res: Response) => {
+    try {
+        const { id } = req.params;
+        const { alias, password, expires_at } = req.body; //obtenemos datos del body opcionales
+
+        // Handle Password Protection
+        // Si el password viene vacío explícitamente (""), apagamos su protección.
+        // Si no es un string vacío y viene definido, la aplicamos.
+        if (password !== undefined) {
+            if (password.trim() === "") {
+                await LinkModel.unprotectLink(Number(id));
+            } else {
+                const hashPassword = await bcrypt.hash(password, 10);
+                await LinkModel.protectLink(Number(id), hashPassword);
+            }
+        }
+
+        // Handle Expiration Date
+        if (expires_at !== undefined) {
+            if (expires_at.trim() === "") {
+                await LinkModel.removeExpiresAt(Number(id));
+            } else {
+                await LinkModel.setExpiresAt(Number(id), expires_at);
+            }
+        }
+
+        // Handle Alias
+        if (alias !== undefined) {
+            await LinkModel.setAlias(Number(id), alias);
+        }
+
+        res.json({ status: "success", code: 200, message: "Link actualizado exitosamente" });
+    } catch (err: any) {
+        res.status(500).json({
+            status: "error", code: 500,
+            message: "Error al actualizar el link",
+            data: null,
+            errors: err.message
+        });
+    }
+}
+
+/**
+ * Verifica la contraseña de un link
+ * @param req 
+ * @param res 
+ * @returns 
+ */
+export const protectLinkController = async (req: Request, res: Response) => {
+    try {
+        const { short_url } = req.query;
+        const { password } = req.body;
+        const passwordHash = await LinkModel.verifyPassword(short_url as string);
+
+        //comparar contraseña hash con la ingresada
+        const isPasswordValid = await bcrypt.compare(password, passwordHash.password);
+        if (!isPasswordValid) {
+            return res.status(400).json({
+                status: "error", code: 400,
+                message: "Contraseña incorrecta",
+                data: null,
+                errors: "Contraseña incorrecta"
+            });
+        }
+        //buscar el enlace al que redirige
+        const link = await LinkModel.getLinkByShortUrl(short_url as string);
+        res.json({ status: "success", code: 200, message: "Link protegido exitosamente", data: link?.url, errors: null });
+    } catch (err: any) {
+        res.status(500).json({
+            status: "error", code: 500,
+            message: "Error en la protección del link",
+            data: null,
+            errors: err.message
+        });
+    }
+}
+
 export const toggleLinkStatusController = async (req: Request, res: Response) => {
     try {
         const { id } = req.params;
@@ -155,6 +253,36 @@ export const toggleLinkStatusController = async (req: Request, res: Response) =>
         res.status(500).json({
             status: "error", code: 500,
             message: "Error al actualizar el estado de la URL",
+            data: null,
+            errors: err.message
+        });
+    }
+}
+
+export const unprotectLinkController = async (req: Request, res: Response) => {
+    try {
+        const { id } = req.params;
+        await LinkModel.unprotectLink(Number(id));
+        res.json({ status: "success", code: 200, message: "Enlace desprotegido", data: null, errors: null });
+    } catch (err: any) {
+        res.status(500).json({
+            status: "error", code: 500,
+            message: "Error al desproteger el enlace",
+            data: null,
+            errors: err.message
+        });
+    }
+}
+
+export const removeExpirationController = async (req: Request, res: Response) => {
+    try {
+        const { id } = req.params;
+        await LinkModel.removeExpiresAt(Number(id));
+        res.json({ status: "success", code: 200, message: "Expiración eliminada", data: null, errors: null });
+    } catch (err: any) {
+        res.status(500).json({
+            status: "error", code: 500,
+            message: "Error al eliminar fecha de expiración",
             data: null,
             errors: err.message
         });

@@ -13,7 +13,7 @@ export const generateQRCodeController = async (req: Request, res: Response) => {
         const { text } = req.body;
 
         if (!text) {
-            return res.status(400).json({ 
+            return res.status(400).json({
                 status: "error",
                 code: 400,
                 message: "Se requiere el campo text",
@@ -23,20 +23,20 @@ export const generateQRCodeController = async (req: Request, res: Response) => {
         }
 
         const qrDataUrl = await QRCode.toDataURL(text);
-        res.json({ 
-            status: "success", 
-            code: 200, 
-            message: "QR generado exitosamente", 
-            data: { qr: qrDataUrl }, 
-            errors: null 
+        res.json({
+            status: "success",
+            code: 200,
+            message: "QR generado exitosamente",
+            data: { qr: qrDataUrl },
+            errors: null
         });
     } catch (error: any) {
-        res.status(500).json({ 
-            status: "error", 
-            code: 500, 
-            message: "Error generando el código QR", 
-            data: null, 
-            errors: error.message 
+        res.status(500).json({
+            status: "error",
+            code: 500,
+            message: "Error generando el código QR",
+            data: null,
+            errors: error.message
         });
     }
 }
@@ -50,28 +50,42 @@ export const generateQRCodeController = async (req: Request, res: Response) => {
 export const getQRCodeController = async (req: Request, res: Response) => {
     try {
         const userId = req.user?.id;
-        if(!userId){
-            return res.status(401).json({ status: "error", code: 401,
+        const page = Number(req.query.page) || 1;
+        const limit = Number(req.query.limit) || 8;
+
+        if (!userId) {
+            return res.status(401).json({
+                status: "error", code: 401,
                 message: "No autenticado",
                 data: null,
-                errors: "No autenticado" });
+                errors: "No autenticado"
+            });
         }
 
-        const list = await TextQRModel.getAll(Number(userId));
-        res.json({ 
-            status: "success", 
-            code: 200, 
-            message: "Listado de textos de QRs exitoso", 
-            data: list, 
-            errors: null 
+        const { qrCodes, total } = await TextQRModel.getAll(Number(userId), page, limit);
+
+        res.json({
+            status: "success",
+            code: 200,
+            message: "Listado de textos de QRs exitoso",
+            data: {
+                qrCodes: qrCodes,
+                meta: {
+                    total: total,
+                    page: page,
+                    limit: limit,
+                    totalPages: Math.ceil(total / limit)
+                }
+            },
+            errors: null
         });
     } catch (error: any) {
-        res.status(500).json({ 
-            status: "error", 
-            code: 500, 
-            message: "Error generando el código QR", 
-            data: null, 
-            errors: error.message 
+        res.status(500).json({
+            status: "error",
+            code: 500,
+            message: "Error generando el código QR",
+            data: null,
+            errors: error.message
         });
     }
 }
@@ -87,7 +101,7 @@ export const registerQRCodeController = async (req: Request, res: Response) => {
         const { text } = req.body;
 
         if (!text) {
-            return res.status(400).json({ 
+            return res.status(400).json({
                 status: "error",
                 code: 400,
                 message: "Se requiere el campo text",
@@ -95,32 +109,34 @@ export const registerQRCodeController = async (req: Request, res: Response) => {
                 errors: "Se requiere el campo text"
             });
         }
-        
+
         const userId = req.user?.id;
-        if(!userId){
-            return res.status(401).json({ status: "error", code: 401,
+        if (!userId) {
+            return res.status(401).json({
+                status: "error", code: 401,
                 message: "No autenticado",
                 data: null,
-                errors: "No autenticado" });
+                errors: "No autenticado"
+            });
         }
 
         await TextQRModel.create(text, Number(userId));
 
         const qrDataUrl = await QRCode.toDataURL(text);
-        res.json({ 
-            status: "success", 
-            code: 200, 
-            message: "QR generado exitosamente", 
-            data: { qr: qrDataUrl }, 
-            errors: null 
+        res.json({
+            status: "success",
+            code: 200,
+            message: "QR generado exitosamente",
+            data: { qr: qrDataUrl },
+            errors: null
         });
     } catch (error: any) {
-        res.status(500).json({ 
-            status: "error", 
-            code: 500, 
-            message: "Error generando el código QR", 
-            data: null, 
-            errors: error.message 
+        res.status(500).json({
+            status: "error",
+            code: 500,
+            message: "Error generando el código QR",
+            data: null,
+            errors: error.message
         });
     }
 }
@@ -135,7 +151,7 @@ export const deleteQRCodeController = async (req: Request, res: Response) => {
     try {
         const { id } = req.params;
         if (!id) {
-            return res.status(400).json({ 
+            return res.status(400).json({
                 status: "error",
                 code: 400,
                 message: "Se requiere el campo id",
@@ -144,27 +160,29 @@ export const deleteQRCodeController = async (req: Request, res: Response) => {
             });
         }
         const userId = req.user?.id;
-        if(!userId){
-            return res.status(401).json({ status: "error", code: 401,
+        if (!userId) {
+            return res.status(401).json({
+                status: "error", code: 401,
                 message: "No autenticado",
                 data: null,
-                errors: "No autenticado" });
+                errors: "No autenticado"
+            });
         }
         await TextQRModel.delete(Number(id), Number(userId));
-        res.json({ 
-            status: "success", 
-            code: 200, 
-            message: "QR eliminado exitosamente", 
-            data: null, 
-            errors: null 
+        res.json({
+            status: "success",
+            code: 200,
+            message: "QR eliminado exitosamente",
+            data: null,
+            errors: null
         });
     } catch (error: any) {
-        res.status(500).json({ 
-            status: "error", 
-            code: 500, 
-            message: "Error eliminando el código QR", 
-            data: null, 
-            errors: error.message 
+        res.status(500).json({
+            status: "error",
+            code: 500,
+            message: "Error eliminando el código QR",
+            data: null,
+            errors: error.message
         });
     }
 }
@@ -179,7 +197,7 @@ export const updateQRCodeController = async (req: Request, res: Response) => {
     try {
         const { id } = req.params;
         if (!id) {
-            return res.status(400).json({ 
+            return res.status(400).json({
                 status: "error",
                 code: 400,
                 message: "Se requiere el campo id",
@@ -188,12 +206,12 @@ export const updateQRCodeController = async (req: Request, res: Response) => {
             });
         }
         const userId = req.params.userId;
-        if(userId){
+        if (userId) {
             throw new Error("Usuario no autenticado");
         }
         const { text } = req.body;
         if (!text) {
-            return res.status(400).json({ 
+            return res.status(400).json({
                 status: "error",
                 code: 400,
                 message: "Se requiere el campo text",
@@ -202,20 +220,20 @@ export const updateQRCodeController = async (req: Request, res: Response) => {
             });
         }
         await TextQRModel.update(Number(id), text, Number(userId));
-        res.json({ 
-            status: "success", 
-            code: 200, 
-            message: "QR actualizado exitosamente", 
-            data: null, 
-            errors: null 
+        res.json({
+            status: "success",
+            code: 200,
+            message: "QR actualizado exitosamente",
+            data: null,
+            errors: null
         });
     } catch (error: any) {
-        res.status(500).json({ 
-            status: "error", 
-            code: 500, 
-            message: "Error actualizando el código QR", 
-            data: null, 
-            errors: error.message 
+        res.status(500).json({
+            status: "error",
+            code: 500,
+            message: "Error actualizando el código QR",
+            data: null,
+            errors: error.message
         });
     }
 }

@@ -1,0 +1,21 @@
+<main class="container">
+    <!-- Form para busqueda y filtrado de enlaces por nombre, fecha y estado -->
+    <form id="search-form" class="input-group-wrapper">
+        <div class="input-icon">
+            <i class="fa-solid fa-search" aria-hidden="true"></i>
+        </div>
+        <input type="url" name="url" id="url-input" class="main-input"
+            placeholder="Busca tus enlaces por nombre, fecha o estado" required autocomplete="off"
+            aria-label="URL a acortar">
+        <button type="submit" class="btn-scan">
+            Buscar <i class="fa-solid fa-search" aria-hidden="true"></i>
+        </button>
+    </form>
+
+    <header class="section-header">
+        <h2 class="section-title">
+            <i class="fa-solid fa-clock-rotate-left" aria-hidden="true"></i> Tus enlaces
+        </h2>
+    </header>
+    <section id="list-big-shorts" aria-live="polite"></section>
+</main>

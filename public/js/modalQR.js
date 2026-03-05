@@ -1,9 +1,9 @@
 async function showQRModal(linkUrl) {
-    
+
     // Create modal structure
     const modal = document.createElement('div');
     modal.className = 'modal-overlay';
-    
+
     // Initial Loading Content
     modal.innerHTML = `
         <div class="modal-content">
@@ -32,10 +32,10 @@ async function showQRModal(linkUrl) {
     };
 
     const closeBtn = document.getElementById('close-qr-modal');
-    if(closeBtn) closeBtn.onclick = closeModal;
-    
-    modal.onclick = (e) => { 
-        if (e.target === modal) closeModal(); 
+    if (closeBtn) closeBtn.onclick = closeModal;
+
+    modal.onclick = (e) => {
+        if (e.target === modal) closeModal();
     };
 
     try {
@@ -56,14 +56,14 @@ async function showQRModal(linkUrl) {
                 </a>
             </div>
         `;
-        
+
         // Re-attach close handler
         const newCloseBtn = document.getElementById('close-qr-modal-btn');
-        if(newCloseBtn) newCloseBtn.onclick = closeModal;
+        if (newCloseBtn) newCloseBtn.onclick = closeModal;
 
     } catch (error) {
-         const modalContent = modal.querySelector('.modal-content');
-         modalContent.innerHTML = `
+        const modalContent = modal.querySelector('.modal-content');
+        modalContent.innerHTML = `
             <h3 class="modal-title" style="color: var(--danger-color);">Error</h3>
             <div class="modal-body">
                 <p style="color: var(--text-secondary);">Could not generate QR code.</p>
@@ -72,7 +72,13 @@ async function showQRModal(linkUrl) {
                 <button id="close-qr-modal-error" class="btn-secondary">Close</button>
             </div>
          `;
-         const errorCloseBtn = document.getElementById('close-qr-modal-error');
-         if(errorCloseBtn) errorCloseBtn.onclick = closeModal;
+        const errorCloseBtn = document.getElementById('close-qr-modal-error');
+        if (errorCloseBtn) errorCloseBtn.onclick = closeModal;
     }
+
+    document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") {
+            closeModal();
+        }
+    });
 }

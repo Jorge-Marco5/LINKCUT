@@ -15,6 +15,14 @@ export const shortUrlController = async (req: Request, res: Response) => {
       return res.redirect("/inactive?msg=El enlace que intentas acceder ha sido desactivado por su propietario.");
     }
 
+    if (link.is_protected === 1) {
+      return res.redirect("/protect?url=" + shortUrl);
+    }
+
+    if (link.expires_at && new Date(link.expires_at) < new Date()) {
+      return res.redirect("/inactive?msg=El enlace que intentas acceder ha expirado.");
+    }
+
     // Identificar país (IP logic)
     const ip = (req.headers['x-forwarded-for'] as string) || req.socket.remoteAddress || "";
     const cleanIp = ip.split(',')[0].trim();

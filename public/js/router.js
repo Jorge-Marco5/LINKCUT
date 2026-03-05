@@ -3,18 +3,25 @@ document.addEventListener('DOMContentLoaded', () => {
         '/': document.getElementById('view-dashboard'),
         '/qrcode': document.getElementById('view-qrcode'),
         '/analytics': document.getElementById('view-analytics'),
-        '/link': document.getElementById('view-url-details')
+        '/link': document.getElementById('view-links'),
+        '/link/detail': document.getElementById('view-url-details'), // Identificador unico lógico para el DOM
+        '/link/protect': document.getElementById('view-protect'),
     };
 
     const navLinks = document.querySelectorAll('.nav-link');
 
     // Function to get base path for dynamic URLs
-    const getBasePath = (path) => path.startsWith('/link/') ? '/link' : path;
+    const getBasePath = (path) => {
+        if (path === '/link' || path === '/link/') return '/link';
+        if (path.startsWith('/link/')) return '/link/detail';
+        return path;
+    };
 
     // Handle initial load
     const path = window.location.pathname;
-    if (views[getBasePath(path)]) {
-        showView(getBasePath(path));
+    const resolvedPath = getBasePath(path);
+    if (views[resolvedPath]) {
+        showView(resolvedPath);
     } else {
         // Default to dashboard
         showView('/');

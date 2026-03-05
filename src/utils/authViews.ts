@@ -68,7 +68,7 @@ export function optionalAuth(req: Request, res: Response, next: NextFunction) {
     next();
 }
 
-export function authMiddleware(requiredRole?: string) {
+export function authViewsMiddleware(requiredRole?: string) {
     return function (req: Request, res: Response, next: NextFunction) {
         let token = req.cookies?.token;
 
@@ -83,7 +83,7 @@ export function authMiddleware(requiredRole?: string) {
         if (!token) {
             // If browser request (accepts html), redirect to login
             if (req.accepts('html')) {
-                return res.json({ status: "error", code: 401, message: "Token requerido" });
+                return res.redirect("/auth/login");
             }
             return res.status(401).json({ message: "Token requerido" });
         }
@@ -94,7 +94,7 @@ export function authMiddleware(requiredRole?: string) {
             if (requiredRole && payload.role !== requiredRole) {
                 if (req.accepts('html')) {
                     // Could redirect to a 403 page or back to dashboard with error
-                    return res.json({ status: "error", code: 403, message: "Acceso denegado" });
+                    return res.redirect("/auth/login?error=Acceso denegado");
                 }
                 return res.status(403).json({ message: "Acceso denegado" });
             }
@@ -102,7 +102,7 @@ export function authMiddleware(requiredRole?: string) {
             next();
         } catch {
             if (req.accepts('html')) {
-                return res.json({ status: "error", code: 401, message: "Token inválido" });
+                return res.redirect("/auth/login");
             }
             return res.status(401).json({ message: "Token inválido" });
         }

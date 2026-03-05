@@ -1,20 +1,24 @@
-<div class="url-details-container" style="margin-top: 100px;">
+<div class="url-details-container" id="url-details-container" style="margin-top: 100px;">
     <!-- Hero Section -->
     <section class="hero">
         <p><strong>Analíticas de URL</strong> Información detallada sobre el rendimiento de tus enlaces.</p>
     </section>
 
     <!-- Header Card -->
-    <div class="card url-header-card" style="display: flex; justify-content: space-between; align-items: center;">
+    <div class="card url-header-card details-header-container">
         <div class="url-header-info">
-            <h1 class="short-url-title" id="detail-short-url">Cargando... <span class="badge active" id="detail-status"
-                    style="display:none;">Active</span></h1>
+            <h1 class="short-url-title" id="detail-short-url">Cargando...
+                <span class="badge active" id="detail-status" style="display:none;">Active</span>
+                <span class="badge protected" id="detail-protected" style="display:none;">Protected</span>
+                <span class="badge expired" id="detail-expired" style="display:none;">Expired</span>
+            </h1>
             <p class="long-url-text" id="detail-long-url"><i class="fa-solid fa-link"></i> Cargando...</p>
         </div>
         <div class="header-actions">
             <button class="btn-action" id="btn-toggle-status"
-                style="background: var(--bg-primary); border: 1px solid var(--border-color); color: var(--text-primary);"><i
-                    class="fa-solid fa-power-off"></i> <span>Desactivar</span></button>
+                style="background: var(--bg-primary); border: 1px solid var(--border-color); color: var(--text-primary);">
+                <i class="fa-solid fa-power-off"></i> <span>Desactivar</span>
+            </button>
         </div>
     </div>
     <!-- Main Grid -->
@@ -84,6 +88,47 @@
                 </div>
             </div>
         </div>
+    </div>
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Customize</h3>
+        </div>
+        <form id="form-customize-url">
+            <div style="margin-bottom: 15px; display: flex; align-items: center; justify-content: space-between;">
+                <label for="custom-url-check" style="color: var(--text-secondary);">Custom URL?</label>
+                <input type="checkbox" id="custom-url-check">
+            </div>
+            <input type="text" id="custom-url-input" placeholder="Custom alias"
+                style="display: none; width: 100%; margin-bottom: 15px; padding: 10px; background: var(--bg-primary); border: 1px solid var(--border-color); color: var(--text-primary); border-radius: 6px;">
+
+            <div style="margin-bottom: 15px; display: flex; align-items: center; justify-content: space-between;">
+                <div>
+                    <label for="password-check" style="color: var(--text-secondary);">Password protect?</label>
+                    <button type="btn" id="btn-unprotect" class="badge not-protected"
+                        style="display: none; border: none; cursor: pointer; margin-left:10px; padding: 5px; background: var(--accent-color); color: var(--text-primary); border-radius: 6px;">Desproteger</button>
+                </div>
+                <input type="checkbox" id="password-check">
+            </div>
+            <input type="text" id="password-input" placeholder="New Password"
+                style="display: none; width: 100%; margin-bottom: 15px; padding: 10px; background: var(--bg-primary); border: 1px solid var(--border-color); color: var(--text-primary); border-radius: 6px;">
+
+            <div style="margin-bottom: 15px; display: flex; align-items: center; justify-content: space-between;">
+                <div>
+                    <label for="expiration-date-check" style="color: var(--text-secondary);">Expiration date?</label>
+                    <button type="btn button" id="btn-remove-expiration" class="badge not-expired"
+                        style="display: none; border: none; cursor: pointer; margin-left:10px; padding: 5px; background: var(--accent-color); color: var(--text-primary); border-radius: 6px;">Quitar
+                        Fecha</button>
+                </div>
+                <input type="checkbox" id="expiration-date-check">
+            </div>
+            <input type="date" id="expiration-date-input"
+                style="display: none; width: 100%; margin-bottom: 15px; padding: 10px; background: var(--bg-primary); border: 1px solid var(--border-color); color: var(--text-primary); border-radius: 6px;">
+
+            <button type="submit" class="btn-scan"
+                style="width: 50%; display: flex; justify-content: center; margin: 0 auto;">
+                <i class="fa-solid fa-arrow-right" aria-hidden="true"></i> Update
+            </button>
+        </form>
     </div>
     <!-- Bottom Actions -->
     <div class="url-bottom-actions card">

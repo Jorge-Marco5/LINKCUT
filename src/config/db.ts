@@ -48,8 +48,12 @@ export async function initDb() {
             url TEXT,
             short_url TEXT UNIQUE,
             user_id INTEGER,
-            created_at TEXT,
             is_active INTEGER DEFAULT 1,
+            is_protected INTEGER DEFAULT 0,
+            password TEXT,
+            alias TEXT,
+            expires_at TEXT,
+            created_at TEXT,
             FOREIGN KEY (user_id) REFERENCES users (id)
         );
 

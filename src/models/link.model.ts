@@ -7,7 +7,10 @@ export class Link {
         public short_url: string,
         public user_id: number,
         public created_at: string,
-        public is_active: number = 1
+        public is_active: number = 1,
+        public is_protected: number = 0,
+        public password: string = "",
+        public expires_at: string = ""
     ) { }
 }
 
@@ -23,21 +26,52 @@ export class LinkModel {
         }
     }
 
+    static async updateLink(id: number, short_url: string, is_protected: number, password: string, expires_at: string) {
+        try {
+            const db = await openDb();
+            const updateLink = await db.run("UPDATE urls SET short_url = ?, is_protected = ?, password = ?, expires_at = ? WHERE id = ?", [short_url, is_protected, password, expires_at, id]);
+            return updateLink;
+        } catch (error) {
+            throw error;
+        }
+    }
+
     static async getLink(id: number, userId: number) {
         try {
             const db = await openDb();
-            const getLink = await db.get<any>("SELECT u.*, count(c.id) as clicks FROM urls u LEFT JOIN clicks c ON u.id = c.url_id WHERE u.id = ? AND user_id = ? GROUP BY u.id", [id, userId]);
+            const getLink = await db.get<any>(
+                "SELECT u.id, u.url, u.short_url, u.user_id, u.created_at, u.is_active, u.is_protected, u.expires_at, u.alias, count(c.id) as clicks " +
+                "FROM urls u LEFT JOIN clicks c ON u.id = c.url_id " +
+                "WHERE u.id = ? AND user_id = ? GROUP BY u.id",
+                [id, userId]
+            );
             return getLink;
         } catch (error) {
             throw error;
         }
     }
 
-    static async getLinks(userId: number) {
+    static async getLinkByShortUrl(short_url: string) {
         try {
             const db = await openDb();
-            const getLink = await db.all<Link>("SELECT u.*, count(c.id) as clicks FROM urls u LEFT JOIN clicks c ON u.id = c.url_id WHERE user_id = ? GROUP BY u.id ORDER BY u.id DESC", [userId]);
+            const getLink = await db.get<Link>("SELECT url FROM urls WHERE short_url = ?", [short_url]);
             return getLink;
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    static async getLinks(userId: number, page: number, limit: number, offset: number) {
+        try {
+            const db = await openDb();
+            const getLink = await db.all<Link>(
+                "SELECT u.id, u.url, u.short_url, u.user_id, u.created_at, u.is_active, u.is_protected, u.expires_at, u.alias, count(c.id) as clicks " +
+                "FROM urls u LEFT JOIN clicks c ON u.id = c.url_id " +
+                "WHERE user_id = ? GROUP BY u.id ORDER BY u.id DESC LIMIT ? OFFSET ?",
+                [userId, limit, offset]
+            );
+            const total = await db.get("SELECT count(*) as total FROM urls WHERE user_id = ?", [userId]);
+            return { getLink, total: total.total, page, limit, offset };
         } catch (error) {
             throw error;
         }
@@ -56,7 +90,7 @@ export class LinkModel {
     static async shortUrl(shortUrl: string) {
         try {
             const db = await openDb();
-            const redirectTo = await db.get<Link>("SELECT id, url, is_active FROM urls WHERE short_url = ?", [shortUrl]);
+            const redirectTo = await db.get<Link>("SELECT id, url, is_active, is_protected, expires_at FROM urls WHERE short_url = ?", [shortUrl]);
             return redirectTo;
         } catch (error) {
             throw error;
@@ -103,6 +137,71 @@ export class LinkModel {
             const db = await openDb();
             const updateLink = await db.run("UPDATE urls SET is_active = ? WHERE id = ?", [status, id]);
             return updateLink;
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    //apagar la protección de un link
+    static async unprotectLink(id: number) {
+        try {
+            const db = await openDb();
+            const updateLink = await db.run("UPDATE urls SET is_protected = 0, password = '' WHERE id = ?", [id]);
+            return updateLink;
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    //agregar protección a un link
+    static async protectLink(id: number, password: string) {
+        try {
+            const db = await openDb();
+            const updateLink = await db.run("UPDATE urls SET is_protected = 1, password = ? WHERE id = ?", [password, id]);
+            return updateLink;
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    //agregar fecha de expiración a un link
+    static async setExpiresAt(id: number, expires_at: string) {
+        try {
+            const db = await openDb();
+            const updateLink = await db.run("UPDATE urls SET expires_at = ? WHERE id = ?", [expires_at, id]);
+            return updateLink;
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    //eliminar fecha de expiración de un link
+    static async removeExpiresAt(id: number) {
+        try {
+            const db = await openDb();
+            const updateLink = await db.run("UPDATE urls SET expires_at = '' WHERE id = ?", [id]);
+            return updateLink;
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    //agregar alias a un link
+    static async setAlias(id: number, alias: string) {
+        try {
+            const db = await openDb();
+            const updateLink = await db.run("UPDATE urls SET short_url = ? WHERE id = ?", [alias, id]);
+            return updateLink;
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    static async verifyPassword(short_url: string) {
+        try {
+            const db = await openDb();
+            const link = await db.get("SELECT is_protected, password FROM urls WHERE short_url = ?", [short_url]);
+            return link;
         } catch (error) {
             throw error;
         }

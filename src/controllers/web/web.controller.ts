@@ -2,7 +2,22 @@ import { Request, Response } from "express";
 
 export const dashboardController = (req: Request, res: Response) => {
     try {
-        res.render(`${__dirname}/../../views/index.ejs`, { user: req.user, path: '/' });
+        if (req.user) {
+            res.render(`${__dirname}/../../views/index.ejs`, { user: req.user, path: '/' });
+        } else {
+            res.render(`${__dirname}/../../views/layout/landingPage.ejs`, { user: null, path: '/' });
+        }
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            message: "Error al cargar la página"
+        });
+    }
+}
+
+export const linksController = (req: Request, res: Response) => {
+    try {
+        res.render(`${__dirname}/../../views/index.ejs`, { user: req.user || null, path: '/links' });
     } catch (error) {
         console.log(error);
         res.status(500).json({
@@ -48,6 +63,17 @@ export const inactiveController = (req: Request, res: Response) => {
     try {
         const msg = req.query.msg;
         res.render(`${__dirname}/../../views/layout/inactive.ejs`, { user: req.user || null, path: '/inactive', msg });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            message: "Error al cargar la página"
+        });
+    }
+}
+
+export const protectController = (req: Request, res: Response) => {
+    try {
+        res.render(`${__dirname}/../../views/layout/protect.ejs`, { user: req.user || null, path: '/protect' });
     } catch (error) {
         console.log(error);
         res.status(500).json({

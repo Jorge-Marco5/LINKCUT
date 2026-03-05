@@ -882,6 +882,7 @@ footer {
 }
 
 .card {
+  width: 100%;
   background: var(--surface-color);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
@@ -894,6 +895,11 @@ footer {
   align-items: center;
 }
 
+.url-header-info {
+  flex: 1;
+  min-width: 0;
+}
+
 .short-url-title {
   font-size: 2rem;
   font-weight: 700;
@@ -902,6 +908,7 @@ footer {
   align-items: center;
   gap: 16px;
   margin-bottom: 8px;
+  word-break: break-all;
 }
 
 .badge.active {
@@ -929,7 +936,7 @@ footer {
 .long-url-text {
   color: var(--text-secondary);
   font-size: 0.9rem;
-  margin: 0 20px;
+  margin-top: 8px;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -940,6 +947,13 @@ footer {
   display: flex;
   align-items: center;
   gap: 8px;
+}
+
+.url-header-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
 }
 
 .url-details-grid {
@@ -1177,6 +1191,10 @@ footer {
   .short-url-title {
     font-size: 1.5rem;
     flex-wrap: wrap;
+  }
+
+  .header-actions {
+    width: 100%;
   }
 
   .url-bottom-actions {

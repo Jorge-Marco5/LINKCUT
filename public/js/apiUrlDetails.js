@@ -11,12 +11,15 @@
 
             const short = data.data;
             if (!short) {
-                alert("Enlace no encontrado");
-                window.location.href = '/';
+                document.getElementById('url-details-container').innerHTML = `
+                    <div style='display: flex; align-items: center; justify-content: center; height: 70svh; flex-direction: column; gap: 12px;'>
+                        <i class="fa-solid fa-link" style="font-size: 2rem; color: var(--text-muted);"></i>
+                        <p>No se encontro el enlace</p>
+                    </div>`;
                 return;
             }
 
-            const fullShortUrl = `${currentHost}${short.short_url}`;
+            const fullShortUrl = `${currentHost}/${short.short_url}`;
 
             // Populate header
             document.getElementById('detail-short-url').innerHTML = `<i class="fa-solid fa-link"></i> ${currentHost}/${short.short_url} <span class="badge active" id="detail-status">Active</span>`;
@@ -41,6 +44,45 @@
                 toggleBtn.style.color = "var(--danger-color)";
                 toggleBtn.style.borderColor = "var(--danger-color)";
             }
+
+            // Mostrar badge de protegido si es protegido es igual a 1
+            const protectedBadge = document.getElementById('detail-protected');
+            let isProtected = short.is_protected;
+
+            if (protectedBadge) {
+                if (isProtected === 1) {
+                    protectedBadge.style.display = 'inline-block';
+                    protectedBadge.innerText = 'Protected';
+                    protectedBadge.className = 'badge protected';
+                    protectedBadge.style.background = 'var(--text-secondary)';
+                } else {
+                    protectedBadge.style.display = 'none'; // Mejor ocultarlo si no esta protegido para limpiar la UI
+                }
+            }
+
+            // Mostrar badge de expirado si la fecha de expiracion es menor a la fecha actual
+            const expiredBadge = document.getElementById('detail-expired');
+            let isExpired = short.expires_at;
+
+            if (expiredBadge) {
+                if (isExpired) {
+                    if (isExpired < new Date().toISOString()) {
+                        expiredBadge.style.display = 'inline-block';
+                        expiredBadge.innerText = 'Expired';
+                        expiredBadge.className = 'badge expired';
+                        expiredBadge.style.background = 'var(--danger-color)';
+                    } else {
+                        expiredBadge.style.display = 'inline-block';
+                        expiredBadge.innerText = `Exp. ${isExpired.split('T')[0]}`;
+                        expiredBadge.className = 'badge not-expired';
+                        expiredBadge.style.background = 'var(--primary-color)';
+                    }
+                } else {
+                    expiredBadge.style.display = 'none';
+                }
+            }
+
+
 
             toggleBtn.onclick = async () => {
                 try {
@@ -110,11 +152,138 @@
                         await axios.delete(`/api/link/${linkId}`, {
                             headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
                         });
-                        window.location.href = '/';
+                        window.location.href = '/link';
                     } catch (err) {
                         console.error(err);
                         alert("Error al eliminar");
                     }
+                }
+            };
+
+            // Customization Form Logic
+            const customUrlCheck = document.getElementById('custom-url-check');
+            const customUrlInput = document.getElementById('custom-url-input');
+            const passwordCheck = document.getElementById('password-check');
+            const passwordInput = document.getElementById('password-input');
+            const expirationCheck = document.getElementById('expiration-date-check');
+            const expirationInput = document.getElementById('expiration-date-input');
+            const btnUnprotect = document.getElementById('btn-unprotect');
+            const btnRemoveExpiration = document.getElementById('btn-remove-expiration');
+
+            // Reset visibility
+            customUrlInput.style.display = 'none';
+            passwordInput.style.display = 'none';
+            expirationInput.style.display = 'none';
+            btnUnprotect.style.display = 'none';
+            btnRemoveExpiration.style.display = 'none';
+
+            // Populate existing values
+            if (short.alias) {
+                customUrlCheck.checked = true;
+                customUrlInput.style.display = 'block';
+                customUrlInput.value = short.alias;
+            } else {
+                customUrlCheck.checked = false;
+                customUrlInput.value = '';
+            }
+
+            if (isProtected === 1) {
+                passwordCheck.checked = true;
+                passwordInput.style.display = 'block';
+                passwordInput.placeholder = "Cambiar Contraseña (deja vacío para mantenerla)";
+                passwordInput.value = '';
+                btnUnprotect.style.display = 'inline-block';
+            } else {
+                passwordCheck.checked = false;
+                passwordInput.placeholder = "New Password";
+                passwordInput.value = '';
+            }
+
+            if (short.expires_at) {
+                expirationCheck.checked = true;
+                expirationInput.style.display = 'block';
+                // El server devuelve ISO YYYY-MM-DDTHH... usamos la primer parte
+                expirationInput.value = short.expires_at.split('T')[0];
+                btnRemoveExpiration.style.display = 'inline-block';
+            } else {
+                expirationCheck.checked = false;
+                expirationInput.value = '';
+            }
+
+            // Quick Actions: Remove Protection and Expiration
+            btnUnprotect.onclick = async () => {
+                if (confirm("¿Estás seguro de quitar la contraseña a este enlace?")) {
+                    try {
+                        btnUnprotect.innerText = "...";
+                        await axios.put(`/api/link/${linkId}/unprotect`, {}, {
+                            headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
+                        });
+                        loadLinkDetails();
+                    } catch (error) {
+                        console.error(error);
+                        alert("Error al desproteger el enlace");
+                        btnUnprotect.innerText = "Desproteger";
+                    }
+                }
+            };
+
+            btnRemoveExpiration.onclick = async () => {
+                if (confirm("¿Estás seguro de quitar la expiración a este enlace y volverlo permanente?")) {
+                    try {
+                        btnRemoveExpiration.innerText = "...";
+                        await axios.put(`/api/link/${linkId}/remove-expiration`, {}, {
+                            headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
+                        });
+                        loadLinkDetails();
+                    } catch (error) {
+                        console.error(error);
+                        alert("Error al quitar expiración");
+                        btnRemoveExpiration.innerText = "Quitar Fecha";
+                    }
+                }
+            };
+
+            // Bind toggle visibility
+            customUrlCheck.onchange = (e) => customUrlInput.style.display = e.target.checked ? 'block' : 'none';
+            passwordCheck.onchange = (e) => passwordInput.style.display = e.target.checked ? 'block' : 'none';
+            expirationCheck.onchange = (e) => expirationInput.style.display = e.target.checked ? 'block' : 'none';
+
+            const customizeForm = document.getElementById('form-customize-url');
+            customizeForm.onsubmit = async (e) => {
+                e.preventDefault();
+                const btn = customizeForm.querySelector("button");
+                btn.disabled = true;
+
+                const payload = {};
+                // Alias
+                payload.alias = customUrlCheck.checked ? customUrlInput.value.trim() : "";
+
+                // Expiración
+                payload.expires_at = expirationCheck.checked ? expirationInput.value : "";
+
+                // Contraseña
+                if (passwordCheck.checked) {
+                    if (passwordInput.value.trim() !== "") {
+                        payload.password = passwordInput.value.trim();
+                    }
+                    // Si check pero vacio, no enviamos .password para mantener el original (el ctrl de backend obvia)
+                } else {
+                    payload.password = ""; // Si desmarca, enviamos vacio para que backend borre la seguridad
+                }
+
+                try {
+                    const response = await axios.put(`/api/link/${linkId}`, payload, {
+                        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
+                    });
+                    if (response.data.status === "success") {
+                        alert("Enlace actualizado exitosamente");
+                        loadLinkDetails(); // Refresh
+                    }
+                } catch (err) {
+                    console.error(err);
+                    alert(err.response?.data?.message || "Error al actualizar enlace");
+                } finally {
+                    btn.disabled = false;
                 }
             };
 
@@ -159,6 +328,12 @@
 
             const ctx = document.getElementById(`detail-chart`);
             if (!ctx) return;
+
+            // Destroy previous chart instance if exists
+            let existingChart = Chart.getChart(ctx);
+            if (existingChart) {
+                existingChart.destroy();
+            }
 
             new Chart(ctx, {
                 type: 'line',
@@ -228,11 +403,21 @@
 
             listDiv.innerHTML = locations.map(loc => {
                 const percentage = Math.round((loc.clicks / maxClicks) * 100);
-                const countryName = new Intl.DisplayNames(['en'], { type: 'region' }).of(loc.country) || loc.country;
+                let countryName = loc.country;
+                if (loc.country && loc.country !== 'Unknown') {
+                    try {
+                        countryName = new Intl.DisplayNames(['en'], { type: 'region' }).of(loc.country) || loc.country;
+                    } catch (e) {
+                        countryName = loc.country; // Fallback to raw string if invalid ISO Code
+                    }
+                } else {
+                    countryName = 'Desconocido';
+                }
+
                 return `
                 <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
                     <span style="font-size: 0.9rem; color: var(--text-primary); width: 100px; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">
-                        ${loc.country === 'Unknown' ? 'Desconocido' : countryName} 
+                        ${countryName} 
                     </span>
                     <div style="flex-grow: 1; margin: 0 15px; background: rgba(255,255,255,0.05); height: 8px; border-radius: 4px; overflow: hidden;">
                         <div style="width: ${percentage}%; height: 100%; background: #06b6d4; border-radius: 4px;"></div>

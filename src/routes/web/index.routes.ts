@@ -1,15 +1,17 @@
 import Router from "express";
-import { dashboardController, qrcodeController, analyticsController, urlDetailsController, inactiveController } from "@/controllers/web/web.controller";
+import { dashboardController, qrcodeController, analyticsController, urlDetailsController, inactiveController, linksController, protectController } from "@/controllers/web/web.controller";
 import authRoutes from "./auth/auth.routes";
-import { authMiddleware } from "@/utils/auth";
+import { authViewsMiddleware, optionalAuth } from "@/utils/authViews";
 
 const router = Router();
 
-router.get("/", authMiddleware("user"), dashboardController);
-router.get("/qrcode", authMiddleware("user"), qrcodeController);
-router.get("/analytics", authMiddleware("user"), analyticsController);
-router.get("/link/:id", authMiddleware("user"), urlDetailsController);
+router.get("/", optionalAuth, dashboardController);
+router.get("/qrcode", authViewsMiddleware("user"), qrcodeController);
+router.get("/analytics", authViewsMiddleware("user"), analyticsController);
+router.get("/link", authViewsMiddleware("user"), linksController);
+router.get("/link/:id", authViewsMiddleware("user"), urlDetailsController);
 router.get("/inactive", inactiveController);
+router.get("/protect", authViewsMiddleware("user"), protectController);
 
 router.use("/auth", authRoutes);
 

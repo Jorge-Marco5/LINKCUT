@@ -1,13 +1,27 @@
 const listQr = document.getElementById("list-qr");
+let qrCurrentPage = 1;
 
-async function listQrcodes() {
+async function listQrcodes(page = 1) {
     try {
-        const { data } = await axios.get("/api/qrcode", {
+        const { data } = await axios.get(`/api/qrcode?page=${page}&limit=5`, {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem("token")}`
             }
         });
-        listQr.innerHTML = data.data.map(qrcode => `
+
+        const qrArray = Array.isArray(data.data) ? data.data : data.data.qrCodes;
+        const meta = data.data.meta;
+
+        if (!qrArray || qrArray.length === 0) {
+            listQr.innerHTML = `
+            <div style='display: flex; align-items: center; justify-content: center; height: 100%; flex-direction: column; gap: 12px;'>
+                <i class="fa-solid fa-qrcode" style="font-size: 2rem; color: var(--text-muted);"></i>
+                <p>No hay codigos QR creados</p>
+            </div>`;
+            return;
+        }
+
+        let htmlList = qrArray.map(qrcode => `
             <div class="qrcode-card">
                 <div class="card-left">
                     <div style="display: flex; align-items: flex-start; gap: 12px;">
@@ -36,12 +50,29 @@ async function listQrcodes() {
                 </div>
             </div>
         `).join("");
+
+        if (meta && meta.totalPages > 1) {
+            htmlList += `
+            <div class="pagination-container" style="display: flex; justify-content: center; gap: 10px; margin-top: 20px; align-items: center;">
+                <button class="btn-action secondary" onclick="changeQrPage(${meta.page - 1})" ${meta.page === 1 ? 'disabled style="opacity: 0.5; cursor: not-allowed;"' : ''}>Anterior</button>
+                <span style="color: var(--text-secondary); font-size: 0.9rem;">Página ${meta.page} de ${meta.totalPages}</span>
+                <button class="btn-action secondary" onclick="changeQrPage(${meta.page + 1})" ${meta.page === meta.totalPages ? 'disabled style="opacity: 0.5; cursor: not-allowed;"' : ''}>Siguiente</button>
+            </div>
+            `;
+        }
+
+        listQr.innerHTML = htmlList;
     } catch (error) {
         console.error(error);
     }
 }
 
-listQrcodes();
+function changeQrPage(newPage) {
+    qrCurrentPage = newPage;
+    listQrcodes(qrCurrentPage);
+}
+
+listQrcodes(qrCurrentPage);
 
 function copyToClipboard(text) {
     navigator.clipboard.writeText(text);
@@ -57,7 +88,7 @@ qrForm.addEventListener("submit", async (e) => {
         const { data } = await axios.post("/api/qrcode", { text }, {
         });
         qrForm.querySelector("input").value = "";
-        listQrcodes();
+        listQrcodes(1); // Volver a pagina 1 despues de crear
         showQRModal(text);
     } catch (error) {
         console.error(error);
@@ -65,16 +96,15 @@ qrForm.addEventListener("submit", async (e) => {
     }
 });
 
-function deleteQrcode(id) {
+async function deleteQrcode(id) {
     try {
         const result = confirm("¿Estas seguro de eliminar este codigo QR?");
         if (result) {
-            const { data } = axios.delete(`/api/qrcode/${id}`);
-            listQrcodes();
+            const { data } = await axios.delete(`/api/qrcode/${id}`);
+            listQrcodes(qrCurrentPage);
         }
     } catch (error) {
         console.error(error);
         alert("Error al eliminar el codigo QR: " + error.response.data.message);
     }
 }
-    

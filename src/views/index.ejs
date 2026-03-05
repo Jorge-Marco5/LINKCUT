@@ -3,14 +3,22 @@
     <div id="view-dashboard" class="view-section" style="display: <%= path === '/' ? 'block' : 'none' %>;">
         <%- include("./layout/shortUrl.ejs") %>
     </div>
+    <div id="view-links" class="view-section" style="display: <%= path === '/link' ? 'block' : 'none' %>;">
+        <%- include("./layout/links.ejs") %>
+    </div>
     <div id="view-qrcode" class="view-section" style="display: <%= path === '/qrcode' ? 'block' : 'none' %>;">
         <%- include("./layout/qrcode.ejs") %>
     </div>
     <div id="view-analytics" class="view-section" style="display: <%= path === '/analytics' ? 'block' : 'none' %>;">
         <%- include("./layout/analytics.ejs") %>
     </div>
-    <div id="view-url-details" class="view-section" style="display: <%= path === '/link' ? 'block' : 'none' %>;">
+    <div id="view-url-details" class="view-section"
+        style="display: <%= path.startsWith('/link/') && path !== '/link' ? 'block' : 'none' %>;">
         <%- include("./layout/urlDetails.ejs") %>
+    </div>
+    <div id="view-protect" class="view-section"
+        style="display: <%= path.startsWith('/link/') && path !== '/link' ? 'block' : 'none' %>;">
+        <%- include("./layout/protect.ejs") %>
     </div>
 
     <%- include('./partials/footer') %>

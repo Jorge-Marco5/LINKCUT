@@ -16,10 +16,28 @@ export class TextQR {
 
 export class TextQRModel {
 
-    static async getAll(user_id: number) {
+    static async getAll(user_id: number, page: number = 1, limit: number = 5) {
         const db = await openDb();
-        const rows = await db.all(`SELECT * FROM textqr WHERE user_id = ? ORDER BY created_at DESC`, [user_id]);
-        return rows.map((row) => new TextQR(row.id, row.text, row.user_id, row.created_at));
+        const offset = (page - 1) * limit;
+
+        const rows = await db.all(
+            `SELECT * FROM textqr WHERE user_id = ? ORDER BY created_at DESC LIMIT ? OFFSET ?`,
+            [user_id, limit, offset]
+        );
+
+        const totalRow = await db.get(
+            `SELECT count(*) as total FROM textqr WHERE user_id = ?`,
+            [user_id]
+        );
+
+        const qrCodes = rows.map((row) => new TextQR(row.id, row.text, row.user_id, row.created_at));
+
+        return {
+            qrCodes,
+            total: totalRow.total,
+            page,
+            limit
+        };
     }
 
     static async create(text: string, user_id: number) {
