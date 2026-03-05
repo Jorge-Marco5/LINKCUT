@@ -94,10 +94,14 @@
             renderChart(linkId);
             renderLocations(linkId);
 
-            // Standard actions
             document.getElementById('btn-copy-detail').onclick = () => {
-                navigator.clipboard.writeText(`${currentHost}/${short.short_url}`);
-                alert("Copiado al portapapeles: " + `${currentHost}/${short.short_url}`);
+                if (typeof copyToClipboard === 'function') {
+                    copyToClipboard(`${currentHost}/${short.short_url}`);
+                } else {
+                    navigator.clipboard.writeText(`${currentHost}/${short.short_url}`)
+                        .then(() => alert("Copiado al portapapeles: " + `${currentHost}/${short.short_url}`))
+                        .catch(err => alert("Error al copiar"));
+                }
             };
 
             document.getElementById('btn-delete-detail').onclick = async () => {

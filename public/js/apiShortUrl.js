@@ -18,7 +18,7 @@ async function listLinks() {
                             <div style="min-width: 40px; height: 40px; background: rgba(6,182,212,0.1); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: var(--accent-color);">
                                 <i class="fa-solid fa-link"></i>
                             </div>
-                            <a href="${urlActual}${short.short_url}" target="_blank" class="short-url">
+                            <a href="${urlActual}${short.short_url}" target="_blank" class="short-url" style="color: ${short.is_active === 0 ? 'var(--danger-color) !important; text-decoration: line-through' : 'var(--accent-color)'};">
                                 ${urlActual}${short.short_url} 
                             </a>
                             <i class="fa-regular fa-copy copy-icon" onclick="copyToClipboard('${urlActual}${short.short_url}')"></i>
@@ -92,8 +92,43 @@ shortenForm.addEventListener("submit", async (e) => {
 });
 
 function copyToClipboard(text) {
-    navigator.clipboard.writeText(text);
-    alert("Copiado al portapapeles: " + text);
+    // Verificar si el navegador soporta el API de Portapapeles Seguro (necesita HTTPS)
+    if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(text)
+            .then(() => alert("Copiado al portapapeles: " + text))
+            .catch(err => {
+                console.error("Error al copiar usando Clipboard API:", err);
+                fallbackCopyTextToClipboard(text);
+            });
+    } else {
+        fallbackCopyTextToClipboard(text);
+    }
+}
+
+// Respaldo para navegadores viejos o HTTP puro sin contexto seguro
+function fallbackCopyTextToClipboard(text) {
+    var textArea = document.createElement("textarea");
+    textArea.value = text;
+    // Evita el scroll hacia el fondo
+    textArea.style.top = "0";
+    textArea.style.left = "0";
+    textArea.style.position = "fixed";
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+
+    try {
+        var successful = document.execCommand('copy');
+        if (successful) {
+            alert("Copiado al portapapeles: " + text);
+        } else {
+            alert("Error al copiar el enlace. Házlo manualmente.");
+        }
+    } catch (err) {
+        console.error('Fallback: Oops, unable to copy', err);
+        alert("Error al copiar el enlace.");
+    }
+    document.body.removeChild(textArea);
 }
 
 function deleteLink(id) {
