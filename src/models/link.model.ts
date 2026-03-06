@@ -54,7 +54,7 @@ export class LinkModel {
     static async getLinkByShortUrl(short_url: string) {
         try {
             const db = await openDb();
-            const getLink = await db.get<Link>("SELECT url FROM urls WHERE short_url = ?", [short_url]);
+            const getLink = await db.get<Link>("SELECT id, url FROM urls WHERE short_url = ?", [short_url]);
             return getLink;
         } catch (error) {
             throw error;
@@ -192,6 +192,20 @@ export class LinkModel {
             const db = await openDb();
             const updateLink = await db.run("UPDATE urls SET short_url = ? WHERE id = ?", [alias, id]);
             return updateLink;
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    //verificar que el alias no exista
+    static async verifyAlias(alias: string) {
+        try {
+            const db = await openDb();
+            const link = await db.get("SELECT short_url FROM urls WHERE short_url = ?", [alias]);
+            if (link) {
+                return true;
+            }
+            return false;
         } catch (error) {
             throw error;
         }

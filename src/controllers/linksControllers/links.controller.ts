@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { Link, LinkModel } from "@/models/link.model";
 import { Click, ClickModel } from "@/models/click.model";
+import geoip from "geoip-lite";
 import dotenv from "dotenv";
 dotenv.config();
 import bcrypt from "bcrypt";
@@ -174,7 +175,7 @@ export const updateLinkController = async (req: Request, res: Response) => {
         // Handle Password Protection
         // Si el password viene vacío explícitamente (""), apagamos su protección.
         // Si no es un string vacío y viene definido, la aplicamos.
-        if (password !== undefined) {
+        if (password !== "" && password !== undefined) {
             if (password.trim() === "") {
                 await LinkModel.unprotectLink(Number(id));
             } else {
@@ -184,7 +185,7 @@ export const updateLinkController = async (req: Request, res: Response) => {
         }
 
         // Handle Expiration Date
-        if (expires_at !== undefined) {
+        if (expires_at !== undefined && expires_at !== "") {
             if (expires_at.trim() === "") {
                 await LinkModel.removeExpiresAt(Number(id));
             } else {
@@ -193,7 +194,16 @@ export const updateLinkController = async (req: Request, res: Response) => {
         }
 
         // Handle Alias
-        if (alias !== undefined) {
+        if (alias !== undefined && alias !== "") {
+            const aliasExists = await LinkModel.verifyAlias(alias);
+            if (aliasExists) {
+                return res.status(400).json({
+                    status: "error", code: 400,
+                    message: "El alias ya existe, intente con otro.",
+                    data: null,
+                    errors: "El alias ya existe"
+                });
+            }
             await LinkModel.setAlias(Number(id), alias);
         }
 
@@ -232,6 +242,23 @@ export const protectLinkController = async (req: Request, res: Response) => {
         }
         //buscar el enlace al que redirige
         const link = await LinkModel.getLinkByShortUrl(short_url as string);
+        if (!link) {
+            return res.status(404).json({
+                status: "error", code: 404,
+                message: "Enlace no encontrado",
+                data: null,
+                errors: "Enlace no encontrado"
+            });
+        }
+
+        // Identificar país (IP logic)
+        const ip = (req.headers['x-forwarded-for'] as string) || req.socket.remoteAddress || "";
+        const cleanIp = ip.split(',')[0].trim();
+        const geo = geoip.lookup(cleanIp);
+        const country = geo ? geo.country : "Unknown";
+
+        await ClickModel.createClick(new Click(0, link.id, new Date().toISOString(), country));
+
         res.json({ status: "success", code: 200, message: "Link protegido exitosamente", data: link?.url, errors: null });
     } catch (err: any) {
         res.status(500).json({

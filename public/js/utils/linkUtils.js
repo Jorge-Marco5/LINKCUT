@@ -6,13 +6,13 @@
 // Genera el HTML de una tarjeta de Link
 function generateLinkCardHTML(short, urlActual) {
     const createdDate = new Date(short.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-    const isActiveColor = short.is_active === 0 ? 'var(--danger-color) !important; text-decoration: line-through' : 'var(--accent-color)';
+    const isActiveColor = short.is_active === 0 ? 'var(--danger-color) !important; ' : 'var(--accent-color)';
     return `
         <div class="link-card">
             <div class="card-left">
                 <div style="display: flex; align-items: center; gap: 8px;">
                     <div style="min-width: 40px; height: 40px; background: rgba(6,182,212,0.1); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: var(--accent-color);">
-                        <i class="fa-solid fa-link"></i>
+                        ${short.is_protected ? '<i class="fa-solid fa-shield-halved" title="Protegido"></i>' : short.expires_at && short.expires_at < new Date().toISOString() ? '<i class="fa-solid fa-clock-rotate-left" title="Expirado"></i>' : short.is_active === 0 ? '<i class="fa-solid fa-link-slash" title="Inactivo"></i>' : '<i class="fa-solid fa-link" title="Activo"></i>'}
                     </div>
                     <a href="${urlActual}${short.short_url}" target="_blank" class="short-url" style="color: ${isActiveColor};">
                         ${urlActual}${short.short_url} 

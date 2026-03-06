@@ -147,7 +147,7 @@
             };
 
             document.getElementById('btn-delete-detail').onclick = async () => {
-                if (confirm("¿Estás seguro de eliminar este enlace?")) {
+                if (confirm("¿Estás seguro de eliminar este enlace?, esta acción no se puede deshacer.")) {
                     try {
                         await axios.delete(`/api/link/${linkId}`, {
                             headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
@@ -269,6 +269,13 @@
                     // Si check pero vacio, no enviamos .password para mantener el original (el ctrl de backend obvia)
                 } else {
                     payload.password = ""; // Si desmarca, enviamos vacio para que backend borre la seguridad
+                }
+
+                // verificar que los 3 campos no esten vacios
+                if (payload.alias === "" && payload.expires_at === "" && payload.password === "") {
+                    alert("Por favor, complete al menos un campo");
+                    btn.disabled = false;
+                    return;
                 }
 
                 try {
