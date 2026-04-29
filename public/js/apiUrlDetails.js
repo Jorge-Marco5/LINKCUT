@@ -22,10 +22,7 @@
             const fullShortUrl = `${currentHost}/${short.short_url}`;
 
             // Populate header
-            document.getElementById('detail-short-url').innerHTML = `<i class="fa-solid fa-link"></i> ${currentHost}/${short.short_url} <span class="badge active" id="detail-status">Active</span>`;
-            document.getElementById('detail-short-url').onclick = () => {
-                window.location.href = `${currentHost}/${short.short_url}`;
-            };
+            document.getElementById('detail-short-url').innerHTML = `<i class="fa-solid fa-link" style="margin-right: 5px;"></i> <a style="text-decoration: none; color: var(--primary-color);" target="_blank" title="${fullShortUrl}" href="${fullShortUrl}">${currentHost}/${short.short_url}</a> <span class="badge active" id="detail-status">Active</span>`;
             // Toggle logic setup
             const statusBadge = document.getElementById('detail-status');
             const toggleBtn = document.getElementById('btn-toggle-status');

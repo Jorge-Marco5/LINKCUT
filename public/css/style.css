@@ -910,6 +910,7 @@ footer {
   gap: 16px;
   margin-bottom: 8px;
   word-break: break-all;
+  cursor: pointer;
 }
 
 .badge.active {

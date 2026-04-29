@@ -14,7 +14,7 @@ async function listQrcodes(page = 1) {
 
         if (!qrArray || qrArray.length === 0) {
             listQr.innerHTML = `
-            <div style='display: flex; align-items: center; justify-content: center; height: 100%; flex-direction: column; gap: 12px;'>
+            <div style='display: flex; align-items: center; justify-content: center; min-height: 20dvh; padding: 20px 0 20px 0; flex-direction: column; gap: 12px;'>
                 <i class="fa-solid fa-qrcode" style="font-size: 2rem; color: var(--text-muted);"></i>
                 <p>No hay codigos QR creados</p>
             </div>`;

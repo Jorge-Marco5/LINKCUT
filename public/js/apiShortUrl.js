@@ -68,7 +68,7 @@ shortenForm.addEventListener("submit", async (e) => {
 
 window.sharedDeleteLink = async function (id) {
     try {
-        const result = confirm("¿Estas seguro de eliminar este enlace?");
+        const result = confirm("¿Estás seguro de eliminar este enlace?, esta acción no se puede deshacer.");
         if (result) {
             await axios.delete(`/api/link/${id}`);
             // Recarga las listas conectadas globalmente
