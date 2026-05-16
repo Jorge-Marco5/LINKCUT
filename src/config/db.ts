@@ -22,8 +22,8 @@ export async function checkDb() {
             console.log(`Directory created: ${DB_DIR}`);
         }
 
-        const db = await openDb();
         await initDb(); // Always run initDb to ensure tables exist
+        const db = await openDb();
         console.log("Database connected and initialized");
     } catch (err) {
         console.error("Error connecting to database:", err);

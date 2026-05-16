@@ -1,0 +1,3 @@
+allowBuilds:
+  bcrypt: false
+  sqlite3: false
